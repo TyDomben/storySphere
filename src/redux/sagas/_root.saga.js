@@ -10,6 +10,7 @@ import userSaga from './user.saga';
 // some sagas trigger other sagas, as an example
 // the registration triggers a login
 // and login triggers setting the user
+// TODO expand on this saga file
 export default function* rootSaga() {
   yield all([
     loginSaga(), // login saga is now registered

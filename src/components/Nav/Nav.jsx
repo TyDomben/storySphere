@@ -31,7 +31,11 @@ function Nav() {
               Info Page
             </Link>
 
+            {/* detailedstoryview and editstoryview are only available from certain screens - that is only from the gallery page */}
+
             <LogOutButton className="navLink" />
+
+
           </>
         )}
 
