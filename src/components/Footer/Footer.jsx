@@ -1,51 +1,39 @@
 import React from "react";
-import { Box, Container, Grid, Link, Typography } from "@mui/material";
+import { Container, Grid, Typography, Link } from "@mui/material";
 
 function Footer() {
   return (
-    <Box component="footer" sx={{ bgcolor: "background.paper", py: 6 }}>
-      <Container maxWidth="lg">
-        <Grid container spacing={4} justifyContent="space-between">
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h6" color="textPrimary" gutterBottom>
-              StorySphere
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              Where Words Come to Life
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Redefining digital storytelling through immersive experiences.
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sm={4}>
-            <Typography variant="h6" color="textPrimary" gutterBottom>
-              Explore
-            </Typography>
-            <Link href="/about" color="inherit" underline="hover">About Us</Link><br/>
-            <Link href="/gallery" color="inherit" underline="hover">Gallery</Link><br/>
-            <Link href="/story-editor" color="inherit" underline="hover">Write a Story</Link><br/>
-            {/* Add more links as needed */}
-          </Grid>
-          <Grid item xs={6} sm={4}>
-            <Typography variant="h6" color="textPrimary" gutterBottom>
-              Connect
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Follow us on social media to stay updated with the latest news and stories.
-            </Typography>
-            {/* Consider adding text links or simply a message encouraging to connect on social media */}
+    <Container component="footer" sx={{ padding: "20px 0" }}>
+      <Grid container justifyContent="space-between" alignItems="center">
+        {/* Production Notice: Use Typography for semantic and accessible text rendering */}
+        <Grid item xs={12} sm={4}>
+          <Typography variant="subtitle1" sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+            StorySphere is a Ty Domben production
+          </Typography>
+        </Grid>
+
+        {/* Navigation Links: Using Grid to organize links into a responsive layout */}
+        <Grid item xs={12} sm={8}>
+          <Grid container spacing={2} justifyContent="flex-end" alignItems="center">
+            {/* Mapping over an array of link objects could be more maintainable */}
+            {['Home', 'Desk', 'Gallery', 'About'].map((text) => (
+              <Grid item key={text}>
+                <Link href={`/${text.toLowerCase()}`} variant="body2">
+                  {text}
+                </Link>
+              </Grid>
+            ))}
+
+            {/* Additional Information: Placed in a single block for now, but should be split if they are separate links */}
+            <Grid item xs={12} sx={{ textAlign: 'center', mt: { sm: 2, xs: 1 } }}>
+              <Typography variant="body2">
+                [Newsletter Sign-up] [Contact Information] [Legal] [Accessibility] [Awards/Certifications] [Copyright Notice]
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          align="center"
-          sx={{ pt: 4 }}
-        >
-          &copy; {new Date().getFullYear()} StorySphere. Embrace the narrative journey.
-        </Typography>
-      </Container>
-    </Box>
+      </Grid>
+    </Container>
   );
 }
 
