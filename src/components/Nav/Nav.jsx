@@ -1,49 +1,56 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import LogOutButton from '../LogOutButton/LogOutButton';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { AppBar, Toolbar, Typography, Button, useTheme } from "@mui/material";
+import LogOutButton from "../LogOutButton/LogOutButton";
 
 function Nav() {
   const user = useSelector((store) => store.user);
+  const theme = useTheme(); // Access the current theme
 
   return (
-    <div className="nav">
-      <Link to="/home">
-        <h2 className="nav-title">Prime Solo Project</h2>
-      </Link>
-      <div>
-        {/* If no user is logged in, show these links */}
-        {!user.id && (
-          // If there's no user, show login/registration links
-          <Link className="navLink" to="/login">
-            Login / Register
-          </Link>
-        )}
+    <AppBar position="static">
+      <Toolbar>
+      <Typography
+        variant="h6"
+        component={RouterLink}
+        to="/"
+        sx={{
+          flexGrow: 1,
+          color: theme.palette.text.primary, // Dynamically set the text color based on the theme
+          textDecoration: 'none', // Optional: Removes underline from the link
+        }}
+      >          StorySphere by Ty
+        </Typography>
 
-        {/* If a user is logged in, show these links */}
-        {user.id && (
+        {/* Conditionally render links based on user login status */}
+        {user.id ? (
+          // Links to show when user is logged in
           <>
-            <Link className="navLink" to="/user">
+            <Button color="inherit" component={RouterLink} to="/user">
               Home
-            </Link>
-
-            <Link className="navLink" to="/info">
-              Info Page
-            </Link>
-
-            {/* detailedstoryview and editstoryview are only available from certain screens - that is only from the gallery page */}
-
-            <LogOutButton className="navLink" />
-
-
+            </Button>
+           
+            {/* TODO: Implement admin dashboard */}
+            {/* <Button color="inherit" component={RouterLink} to="/admin-dashboard">
+              Admin Dashboard
+            </Button> */}
+            <LogOutButton color="error" />
+            {/* might change this from error as i do more dark mode light mode */}
           </>
+        ) : (
+          // Links to show when no user is logged in
+          <Button color="inherit" component={RouterLink} to="/login">
+            Login / Register
+          </Button>
         )}
 
-        <Link className="navLink" to="/about">
+        {/* The About link is always visible */}
+        <Button color="inherit" component={RouterLink} to="/about">
           About
-        </Link>
-      </div>
-    </div>
+        </Button>
+      </Toolbar>
+    </AppBar>
   );
 }
 

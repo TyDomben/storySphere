@@ -1,4 +1,6 @@
 const express = require('express');
+const path = require('path'); // added when transitioning to browser router
+
 const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT || 5001;
@@ -25,6 +27,13 @@ app.use(passport.session());
 // Routes
 // TODO add more routes here
 app.use('/api/user', userRouter);
+
+
+// !Catch-all route to serve React app for unmatched routes
+// !AFTER API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 // Listen Server & Port
 app.listen(PORT, () => {

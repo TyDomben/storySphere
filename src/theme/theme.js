@@ -1,19 +1,46 @@
 // src/theme/theme.js
-// TODO implement a dark mode light mode toggle button
-import { createTheme } from '@mui/material/styles';
-
-export const lightTheme = createTheme({
+import { createTheme } from "@mui/material/styles";
+// https://mui.com/material-ui/customization/dark-mode/
+const getDesignTokens = (mode) => ({
   palette: {
-    mode: 'light',
-    // Define other light theme properties here
+    mode,
+    ...(mode === "light"
+      ? {
+          // Palette values for light mode
+          primary: {
+            main: "#1976d2", // blue
+          },
+          secondary: {
+            main: "#dc004e", // pink
+          },
+          background: {
+            default: "#f3f6f9", // Light grey background
+            paper: "#ffffff",
+          },
+        }
+      : {
+          // Palette values for dark mode
+          primary: {
+            main: "#90caf9", // Lighter blue for contrast against dark backgrounds
+          },
+          secondary: {
+            main: "#f48fb1", // Lighter pink for contrast
+          },
+          background: {
+            default: "#121212", // Dark grey background
+            paper: "#1e1e1e",
+          },
+          text: {
+            primary: "#e0e0e0",
+            secondary: "#aaaaaa",
+          },
+        }),
   },
-  // Add more customization for the light theme
+  // Add any other global overrides and customizations here
 });
 
-export const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    // Define other dark theme properties here
-  },
-  // Add more customization for the dark theme
-});
+// Create a light mode theme
+export const lightTheme = createTheme(getDesignTokens("light"));
+
+// Create a dark mode theme
+export const darkTheme = createTheme(getDesignTokens("dark"));
