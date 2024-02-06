@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, TextField, Typography, Paper } from "@mui/material";
 
 function RegisterForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const errors = useSelector((store) => store.errors);
   const dispatch = useDispatch();
 
@@ -11,7 +12,7 @@ function RegisterForm() {
     event.preventDefault();
 
     dispatch({
-      type: 'REGISTER',
+      type: "REGISTER",
       payload: {
         username: username,
         password: password,
@@ -20,41 +21,43 @@ function RegisterForm() {
   }; // end registerUser
 
   return (
-    <form className="formPanel" onSubmit={registerUser}>
-      <h2>Register User</h2>
+    <Paper elevation={3} style={{ padding: "20px" }}>
+      <Typography variant="h5" component="h3">
+        Register User
+      </Typography>
       {errors.registrationMessage && (
-        <h3 className="alert" role="alert">
+        <Typography color="error" role="alert">
           {errors.registrationMessage}
-        </h3>
+        </Typography>
       )}
-      <div>
-        <label htmlFor="username">
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={username}
-            required
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label htmlFor="password">
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={password}
-            required
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <input className="btn" type="submit" name="submit" value="Register" />
-      </div>
-    </form>
+      <TextField
+        label="Username"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={username}
+        required
+        onChange={(event) => setUsername(event.target.value)}
+      />
+      <TextField
+        label="Password"
+        type="password"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={password}
+        required
+        onChange={(event) => setPassword(event.target.value)}
+      />
+      <Button
+        type="submit"
+        color="primary"
+        variant="contained"
+        onClick={registerUser}
+      >
+        Register
+      </Button>
+    </Paper>
   );
 }
 

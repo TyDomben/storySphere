@@ -28,7 +28,6 @@ app.use(passport.session());
 // TODO add more routes here
 app.use('/api/user', userRouter);
 
-
 // !Catch-all route to serve React app for unmatched routes
 // !AFTER API routes
 app.get('*', (req, res) => {
