@@ -23,6 +23,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
+// TODO add more routes here
 app.use('/api/user', userRouter);
 
 // Listen Server & Port
