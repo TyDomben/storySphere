@@ -1,49 +1,86 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import LogOutButton from '../LogOutButton/LogOutButton';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Switch,
+  FormControlLabel,
+  useTheme, // Import the useTheme hook from MUI
+} from "@mui/material";
+import LogOutButton from "../LogOutButton/LogOutButton";
 
-function Nav() {
+function Nav({ toggleTheme, mode }) {
+  const theme = useTheme(); // Now theme is defined
+
   const user = useSelector((store) => store.user);
-
+  // const theme = useTheme(); // Access the current theme
+  const handleThemeChange = (event) => {
+    toggleTheme(); // Call the function passed from App to toggle the theme
+  };
   return (
-    <div className="nav">
-      <Link to="/home">
-        <h2 className="nav-title">Prime Solo Project</h2>
-      </Link>
-      <div>
-        {/* If no user is logged in, show these links */}
-        {!user.id && (
-          // If there's no user, show login/registration links
-          <Link className="navLink" to="/login">
-            Login / Register
-          </Link>
-        )}
-
-        {/* If a user is logged in, show these links */}
-        {user.id && (
-          <>
-            <Link className="navLink" to="/user">
-              Home
-            </Link>
-
-            <Link className="navLink" to="/info">
-              Info Page
-            </Link>
-
-            {/* detailedstoryview and editstoryview are only available from certain screens - that is only from the gallery page */}
-
-            <LogOutButton className="navLink" />
-
-
-          </>
-        )}
-
-        <Link className="navLink" to="/about">
+    <AppBar position="static">
+      <Toolbar>
+        <Typography
+          variant="h6"
+          component={RouterLink}
+          to="/"
+          sx={{
+            flexGrow: 1,
+            color: theme.palette.text.primary, // Dynamically set the text color based on the theme
+            textDecoration: "none", // Optional: Removes underline from the link
+          }}
+        >
+          {" "}
+          StorySphere by Ty
+        </Typography>
+        {/* Theme toggle switch */}
+        {/* right now the theme is stuck on "dark" and it does not toggle - the actual theme is light however  */}
+        <FormControlLabel
+          control={
+            <Switch
+              checked={mode === "dark"}
+              onChange={handleThemeChange}
+              name="themeToggle"
+              color="default"
+            />
+          }
+          label={mode === "light" ? "Light Mode" : "Dark Mode"}
+        />
+        {/* Conditionally render links based on user login status */}
+        {/* The About link is always visible */}
+        <Button color="inherit" component={RouterLink} to="/about">
           About
-        </Link>
-      </div>
-    </div>
+        </Button>
+        {user.id ? (
+          // Links to show when user is logged in
+          <>
+            <Button color="inherit" component={RouterLink} to="/user">
+              Home
+            </Button>
+            <Button color="inherit" component={RouterLink} to="/gallery">
+              Gallery
+            </Button>
+            <Button color="inherit" component={RouterLink} to="/desk">
+              Desk
+            </Button>
+            {/* TODO: Implement admin dashboard */}
+            {/* <Button color="inherit" component={RouterLink} to="/admin-dashboard">
+              Admin Dashboard
+            </Button> */}
+
+            <LogOutButton color="error" />
+          </>
+        ) : (
+          // Links to show when no user is logged in
+          <Button color="inherit" component={RouterLink} to="/login">
+            Login / Register
+          </Button>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 }
 

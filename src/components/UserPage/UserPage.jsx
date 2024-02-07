@@ -1,6 +1,9 @@
 import React from 'react';
 import LogOutButton from '../LogOutButton/LogOutButton';
 import {useSelector} from 'react-redux';
+// import { Container, Typography, Button, Box } from '@mui/material';
+// import LogOutButton from '../LogOutButton/LogOutButton'; 
+// Ensure this component is adapted to use MUI Button if not already
 
 function UserPage() {
   // this component doesn't do much to start, just renders some user reducer info to the DOM
