@@ -16,13 +16,15 @@ function LandingPage() {
       <Grid item xs={12} md={6}>
         <div
           style={{
-            backgroundImage: `url(/images/v-puppy.png)`,
+            backgroundImage: "url(public/v-puppy.png)", // Use a relative path
+            
             backgroundSize: "cover",
             backgroundPosition: "center center",
-            height: "100vh", // This sets the height to full view height
+            height: "100vh",
           }}
         >
           {/* Content over image can go here if needed */}
+          "Show me a picture of my Vizsla puppy, Loki. Wearing a red hat and a blue scarf."
         </div>
       </Grid>
 
