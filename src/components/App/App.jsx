@@ -39,44 +39,30 @@ function App() {
 
   return (
     <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
-      <CssBaseline /> {/* Provides a consistent baseline style */}
-      <button onClick={toggleMode}>Toggle Mode</button>
+      <CssBaseline />
       <Router>
-        <div>
-          <Nav />
-          <Switch>
-            <Redirect exact from="/" to="/home" />
-            <Route exact path="/about" component={AboutPage} />
-            <ProtectedRoute exact path="/user" component={UserPage} />
-            <Route
-              exact
-              path="/login"
-              render={() => (user.id ? <Redirect to="/user" /> : <LoginPage />)}
-            />
-            <Route
-              exact
-              path="/registration"
-              render={() =>
-                user.id ? <Redirect to="/user" /> : <RegisterPage />
-              }
-            />
-            <Route
-              exact
-              path="/home"
-              render={() =>
-                user.id ? <Redirect to="/user" /> : <LandingPage />
-              }
-            />
-            <ProtectedRoute exact path="/gallery" component={Gallery} />
-            <Route path="/gallery/:storyId" component={DetailedStoryView} />
-            <Route path="/edit/:storyId" component={EditStoryPage} />
-
-            <ProtectedRoute exact path="/desk" component={Desk} />
-
-            <Route path="*" render={() => <h1>404 - Page Not Found</h1>} />
-          </Switch>
-          <Footer />
-        </div>
+        <Nav />
+        <Switch>
+          {/* Define the root path to render the LandingPage */}
+          <Route exact path="/" component={LandingPage} />
+          {/* Remove Redirect from "/home" to "/", as it is unnecessary */}
+          
+          {/* Define other specific routes */}
+          <Route exact path="/about" component={AboutPage} />
+          <ProtectedRoute exact path="/user" component={UserPage} />
+          <Route exact path="/login" render={() => (user.id ? <Redirect to="/user" /> : <LoginPage />)} />
+          <Route exact path="/registration" render={() => (user.id ? <Redirect to="/user" /> : <RegisterPage />)} />
+          {/* Remove the duplicate "/home" route as it is the same as the root "/" */}
+          
+          <ProtectedRoute exact path="/gallery" component={Gallery} />
+          <Route exact path="/gallery/:storyId" component={DetailedStoryView} />
+          <Route exact path="/edit/:storyId" component={EditStoryPage} />
+          <ProtectedRoute exact path="/desk" component={Desk} />
+          
+          {/* Fallback route for 404 Not Found */}
+          <Route render={() => <h1>404 - Page Not Found</h1>} />
+        </Switch>
+        <Footer />
       </Router>
     </ThemeProvider>
   );
