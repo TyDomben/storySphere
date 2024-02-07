@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { Container, Typography, Box, Button } from "@mui/material";
 
-function DetailedStoryView() {
+function DetailedStoryPage() {
   const { storyId } = useParams();
   const history = useHistory();
 
@@ -44,4 +44,4 @@ function DetailedStoryView() {
   );
 }
 
-export default DetailedStoryView;
+export default DetailedStoryPage;

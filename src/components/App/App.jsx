@@ -18,7 +18,7 @@ import UserPage from "../UserPage/UserPage";
 import LandingPage from "../LandingPage/LandingPage";
 import LoginPage from "../LoginPage/LoginPage";
 import RegisterPage from "../RegisterPage/RegisterPage";
-import DetailedStoryView from "../DetailedStoryView/DetailedStoryView";
+import DetailedStoryPage from "../DetailedStoryPage/DetailedStoryPage.jsx";
 import Desk from "../Desk/Desk.jsx";
 import EditStoryPage from "../EditStoryPage/EditStoryPage";
 // import AdminDashboard from "../AdminDashboard/AdminDashboard";
@@ -55,7 +55,7 @@ function App() {
           {/* Remove the duplicate "/home" route as it is the same as the root "/" */}
           
           <ProtectedRoute exact path="/gallery" component={Gallery} />
-          <Route exact path="/gallery/:storyId" component={DetailedStoryView} />
+          <Route exact path="/gallery/:storyId" component={DetailedStoryPage} />
           <Route exact path="/edit/:storyId" component={EditStoryPage} />
           <ProtectedRoute exact path="/desk" component={Desk} />
           
