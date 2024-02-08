@@ -16,6 +16,7 @@
     "cookie-session": "^2.0.0",
     "dotenv": "^16.4.1",
     "express": "^4.17.1",
+    "fs": "^0.0.1-security",
     "openai": "^4.26.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

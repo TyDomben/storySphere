@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AppBar,
   Toolbar,
@@ -8,17 +8,32 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  useTheme, // Import the useTheme hook from MUI
+  // useTheme,
 } from "@mui/material";
 import LogOutButton from "../LogOutButton/LogOutButton";
 
-function Nav({ toggleTheme, mode }) {
-  const theme = useTheme(); // Now theme is defined
+// Import the toggleTheme action from the actions folder
 
-  const user = useSelector((store) => store.user);
+function Nav() {
+  // No 'toggleTheme' or 'mode' props  needed here anymore
+  const [mode, setMode] = useState("light");
+const user = useSelector((store) => store.user);
   // const theme = useTheme(); // Access the current theme
-  const handleThemeChange = (event) => {
-    toggleTheme(); // Call the function passed from App to toggle the theme
+  // Load on Mount - Check Local Storage first
+  useEffect(() => {
+    const storedMode = localStorage.getItem("themeMode");
+    if (storedMode) {
+      setMode(storedMode);
+    }
+  }, []);
+
+  // Save on Change in Local Storage
+  useEffect(() => {
+    localStorage.setItem("themeMode", mode);
+  }, [mode]); // Run effect every time 'mode' changes.
+
+  const handleThemeChange = () => {
+    setMode((prevMode) => (prevMode === "light" ? "dark" : "light")); // Toggle State
   };
   return (
     <AppBar position="static">
@@ -29,7 +44,9 @@ function Nav({ toggleTheme, mode }) {
           to="/"
           sx={{
             flexGrow: 1,
-            color: theme.palette.text.primary, // Dynamically set the text color based on the theme
+            // Access theme colors (needs proper ThemeProvider setup still)
+
+            // color: theme.palette.text.primary, // Dynamically set the text color based on the theme
             textDecoration: "none", // Optional: Removes underline from the link
           }}
         >
@@ -41,7 +58,8 @@ function Nav({ toggleTheme, mode }) {
         <FormControlLabel
           control={
             <Switch
-              checked={mode === "dark"}
+              checked={mode === "dark"} // Directly reference local 'mode'
+              // dispath from here - to control global theme??
               onChange={handleThemeChange}
               name="themeToggle"
               color="default"

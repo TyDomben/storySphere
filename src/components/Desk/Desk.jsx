@@ -1,15 +1,23 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Paper } from "@mui/material";
+import { useDispatch } from "react-redux";
+import * as storyActions from "../../redux/actions/actions";
+import { generateStoryRequest } from "../../redux/actions/actions";
+// import { useSelector } from 'react-redux'
+// import axios from 'axios';
 // https://mui.com/material-ui/react-stepper/
 
 function Desk() {
+  const dispatch = useDispatch();
+
   const [inputPrompt, setInputPrompt] = useState("");
   const [generatedStory, setGeneratedStory] = useState("");
   const [imageURL, setImageURL] = useState("");
 
   const handleGenerateStory = () => {
     // TODO: Replace with actual story generation logic
-    setGeneratedStory("Generated story based on the input prompt.");
+    // Dispatch the action with the prompt provided by the user
+    dispatch(storyActions.generateStoryRequest(inputPrompt));
   };
 
   const handleAddImageToStory = () => {

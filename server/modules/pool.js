@@ -13,6 +13,8 @@ let pool;
 // to set the connection info: web address, username/password, db name
 // eg: 
 //  DATABASE_URL=postgresql://jDoe354:secretPw123@some.db.com/prime_app
+//  DATABASE_URL=postgresql://jDoe354:secretPw123@some.db.com/story_sphere
+
 if (process.env.DATABASE_URL) {
     pool = new pg.Pool({
         connectionString: process.env.DATABASE_URL,
@@ -28,7 +30,7 @@ else {
     pool = new pg.Pool({
         host: 'localhost',
         port: 5432,
-        database: 'prime_app',   // 	💥 Change this to the name of your database!
+        database: 'story_sphere',   // 	💥 Change this to the name of your database!
     });
 }
 
