@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AppBar,
   Toolbar,
@@ -8,18 +8,36 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  useTheme, // Import the useTheme hook from MUI
+  // useTheme,
 } from "@mui/material";
 import LogOutButton from "../LogOutButton/LogOutButton";
+import { useTheme } from "../../theme/ThemeContext";
 
-function Nav({ toggleTheme, mode }) {
-  const theme = useTheme(); // Now theme is defined
+// Import the toggleTheme action from the actions folder
 
+function Nav({ toggleTheme }) {
+  // Receive toggleTheme as a prop
+  const [mode, setMode] = useState("light");
   const user = useSelector((store) => store.user);
   // const theme = useTheme(); // Access the current theme
-  const handleThemeChange = (event) => {
-    toggleTheme(); // Call the function passed from App to toggle the theme
-  };
+  // Load on Mount - Check Local Storage first
+  useEffect(() => {
+    const storedMode = localStorage.getItem("themeMode");
+    if (storedMode) {
+      setMode(storedMode);
+    }
+  }, []);
+
+  // Save on Change in Local Storage
+  useEffect(() => {
+    localStorage.setItem("themeMode", mode);
+  }, [mode]); // Run effect every time 'mode' changes.
+
+  // const handleThemeChange = () => {
+  //   setMode((prevMode) => (prevMode === "light" ? "dark" : "light")); // Toggle State
+  // };
+  // const { toggleTheme, themeMode } = useTheme(); // Use this for toggling and displaying the theme
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -29,7 +47,9 @@ function Nav({ toggleTheme, mode }) {
           to="/"
           sx={{
             flexGrow: 1,
-            color: theme.palette.text.primary, // Dynamically set the text color based on the theme
+            // Access theme colors (needs proper ThemeProvider setup still)
+
+            // color: theme.palette.text.primary, // Dynamically set the text color based on the theme
             textDecoration: "none", // Optional: Removes underline from the link
           }}
         >
@@ -37,17 +57,16 @@ function Nav({ toggleTheme, mode }) {
           StorySphere by Ty
         </Typography>
         {/* Theme toggle switch */}
-        {/* right now the theme is stuck on "dark" and it does not toggle - the actual theme is light however  */}
         <FormControlLabel
           control={
             <Switch
-              checked={mode === "dark"}
-              onChange={handleThemeChange}
+              // You might want to manage `checked` state based on the prop
+              onChange={toggleTheme} // Use toggleTheme directly
               name="themeToggle"
               color="default"
             />
           }
-          label={mode === "light" ? "Light Mode" : "Dark Mode"}
+          label="Toggle Theme" // Adjust label as needed
         />
         {/* Conditionally render links based on user login status */}
         {/* The About link is always visible */}
