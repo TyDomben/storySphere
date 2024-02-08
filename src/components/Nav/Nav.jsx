@@ -60,7 +60,7 @@ function Nav({ toggleTheme }) {
         <FormControlLabel
           control={
             <Switch
-              // You might want to manage `checked` state based on the prop
+              //might want to manage `checked` state based on the prop
               onChange={toggleTheme} // Use toggleTheme directly
               name="themeToggle"
               color="default"

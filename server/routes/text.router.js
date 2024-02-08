@@ -43,7 +43,7 @@ router.post("/generate", async (req, res) => {
     const completion = await openai.createCompletion({
       model: "text-davinci-003", // or whichever model you're using
       prompt: prompt,
-      max_tokens: 150, // adjust as needed
+      max_tokens: 50, // adjust as needed
     });
     const generatedText = completion.choices[0].text.trim();
 
