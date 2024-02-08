@@ -30,6 +30,12 @@ function App() {
 
   const [mode, setMode] = useState("light");
 
+  // Toggle theme mode
+  const toggleTheme = () => {
+    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+  };
+  // Pass `toggleTheme` to components that need it (e.g., via props or context)
+
   useEffect(() => {
     dispatch({ type: "FETCH_USER" });
   }, [dispatch]);
@@ -38,7 +44,7 @@ function App() {
     <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
       <CssBaseline />
       <Router>
-        <Nav />
+        <Nav toggleTheme={toggleTheme} /> {/* Pass toggleTheme as a prop */}
         <Switch>
           {/* Define the root path to render the LandingPage */}
           <Route exact path="/" component={LandingPage} />

@@ -11,13 +11,14 @@ import {
   // useTheme,
 } from "@mui/material";
 import LogOutButton from "../LogOutButton/LogOutButton";
+import { useTheme } from "../../theme/ThemeContext";
 
 // Import the toggleTheme action from the actions folder
 
-function Nav() {
-  // No 'toggleTheme' or 'mode' props  needed here anymore
+function Nav({ toggleTheme }) {
+  // Receive toggleTheme as a prop
   const [mode, setMode] = useState("light");
-const user = useSelector((store) => store.user);
+  const user = useSelector((store) => store.user);
   // const theme = useTheme(); // Access the current theme
   // Load on Mount - Check Local Storage first
   useEffect(() => {
@@ -32,9 +33,11 @@ const user = useSelector((store) => store.user);
     localStorage.setItem("themeMode", mode);
   }, [mode]); // Run effect every time 'mode' changes.
 
-  const handleThemeChange = () => {
-    setMode((prevMode) => (prevMode === "light" ? "dark" : "light")); // Toggle State
-  };
+  // const handleThemeChange = () => {
+  //   setMode((prevMode) => (prevMode === "light" ? "dark" : "light")); // Toggle State
+  // };
+  // const { toggleTheme, themeMode } = useTheme(); // Use this for toggling and displaying the theme
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -54,18 +57,16 @@ const user = useSelector((store) => store.user);
           StorySphere by Ty
         </Typography>
         {/* Theme toggle switch */}
-        {/* right now the theme is stuck on "dark" and it does not toggle - the actual theme is light however  */}
         <FormControlLabel
           control={
             <Switch
-              checked={mode === "dark"} // Directly reference local 'mode'
-              // dispath from here - to control global theme??
-              onChange={handleThemeChange}
+              // You might want to manage `checked` state based on the prop
+              onChange={toggleTheme} // Use toggleTheme directly
               name="themeToggle"
               color="default"
             />
           }
-          label={mode === "light" ? "Light Mode" : "Dark Mode"}
+          label="Toggle Theme" // Adjust label as needed
         />
         {/* Conditionally render links based on user login status */}
         {/* The About link is always visible */}
