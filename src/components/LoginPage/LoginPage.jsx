@@ -1,7 +1,7 @@
 import React from 'react';
 import LoginForm from '../LoginForm/LoginForm';
 import { useHistory } from 'react-router-dom';
-
+// TODO make this like the registration page so the puppy image shows up
 function LoginPage() {
   const history = useHistory();
 

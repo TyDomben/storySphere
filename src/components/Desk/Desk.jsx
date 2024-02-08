@@ -51,6 +51,8 @@ function Desk() {
     };
 
     console.log(newStory);
+    // Dispatch the action
+    dispatch(storyActions.addStoryRequest(storyData));
     // Reset form
     setTitle("");
     setInputPrompt("");

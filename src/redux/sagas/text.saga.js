@@ -2,11 +2,6 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import * as actions from "../actions/actions";
-// import {
-//   GENERATE_STORY_REQUEST,
-//   generateStorySuccess,
-//   generateStoryFailure,
-// } from '../actions/actions';
 
 // !WORKER SAGAs
 function* fetchStoriesSaga() {
@@ -17,9 +12,15 @@ function* fetchStoriesSaga() {
     yield put(actions.fetchStoriesFailure(error.toString()));
   }
 }
-// Worker saga: Add story
+// Worker saga for adding a story
 function* addStorySaga(action) {
-  // Implementation
+  try {
+    const response = yield call(axios.post, '/api/text', action.payload);
+    yield put(actions.addStorySuccess(response.data));
+    // Optionally, handle any follow-up actions, like redirecting or fetching the updated list of stories
+  } catch (error) {
+    yield put(actions.addStoryFailure(error.toString()));
+  }
 }
 // Worker saga: Generate story
 function* generateStorySaga(action) {

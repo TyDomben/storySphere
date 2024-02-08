@@ -1,7 +1,7 @@
 // !refrence file not used
 // !refrence file not used
 // !refrence file not used
-
+// <!-- https://platform.openai.com/docs/guides/text-generation/chat-completions-api -->
 const OpenAI = require("openai").default;
 const fs = require("fs");
 const dotenv = require("dotenv");

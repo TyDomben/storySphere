@@ -33,7 +33,22 @@ export const fetchStoriesFailure = (error) => ({
   type: FETCH_STORIES_FAILURE,
   payload: error,
 });
-// Story Action Creators
+// ADD STORY - Action Creators for adding stories POST
+export const addStoryRequest = (storyData) => ({
+  type: 'ADD_STORY_REQUEST',
+  payload: storyData,
+});
+
+export const addStorySuccess = (story) => ({
+  type: 'ADD_STORY_SUCCESS',
+  payload: story,
+});
+
+export const addStoryFailure = (error) => ({
+  type: 'ADD_STORY_FAILURE',
+  payload: error,
+});
+// Story Action Creators for generating a new story via OpenAI and saving it. This involves calling the OpenAI API and then a POST operation to save the story.
 export const generateStoryRequest = (prompt) => ({
   type: GENERATE_STORY_REQUEST,
   payload: { prompt },
