@@ -9,13 +9,15 @@
 // content is what openAI is going to return to us based on the prompt we feed it - the prompt we feed it is going to be mostly what is in the text box.
 // initially we need to get it to where it's just "todo list" type crud - just to get it done for now.
 // we mayb want to introduce mui - steppers into this if we go so far as to do image and audio generation
-
+// ! use steppers to make this a seamless process
+// ! use steppers to make this a seamless process
+// ! use steppers to make this a seamless process
+// ! use steppers to make this a seamless process
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Paper } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
 import * as storyActions from "../../redux/actions/actions";
-import { generateStoryRequest } from "../../redux/actions/actions";
 // import axios from 'axios';
 // https://mui.com/material-ui/react-stepper/
 
@@ -52,7 +54,7 @@ function Desk() {
 
     console.log(newStory);
     // Dispatch the action
-    dispatch(storyActions.addStoryRequest(storyData));
+    dispatch(storyActions.addStoryRequest(newStory));
     // Reset form
     setTitle("");
     setInputPrompt("");
