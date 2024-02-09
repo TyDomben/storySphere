@@ -22,6 +22,7 @@ export default function* rootSaga() {
     userSaga(),
     watchTextSagas(),
     watchImageSagas(),
+    
     // watchAudioSagas(),
   ]);
 }

@@ -31,71 +31,6 @@ function Gallery() {
     dispatch(fetchImagesRequest());
   }, [dispatch]);
 
-  // const [tempStories] = useState([
-  //   {
-  //     id: 1,
-  //     title: "The Adventure Begins",
-  //     summary: "An exciting journey starts in the heart of the ancient woods.",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Lost in Time",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "The Last Stand",
-  //     summary:
-  //       "Heroes face their toughest challenge yet in a battle to save the world.",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "The Legend Continues",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "The Legend Continues",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  //   {
-  //     id: 6,
-  //     title: "The Legend Continues",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  //   {
-  //     id: 7,
-  //     title: "The Adventure Begins",
-  //     summary: "An exciting journey starts in the heart of the ancient woods.",
-  //   },
-  //   {
-  //     id: 8,
-  //     title: "Lost in Time",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  //   {
-  //     id: 9,
-  //     title: "The Last Stand",
-  //     summary:
-  //       "Heroes face their toughest challenge yet in a battle to save the world.",
-  //   },
-  //   {
-  //     id: 10,
-  //     title: "The Legend Continues",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  //   {
-  //     id: 11,
-  //     title: "The Legend Continues",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  //   {
-  //     id: 12,
-  //     title: "The Legend Continues",
-  //     summary: "A mysterious tale of time travel and lost civilizations.",
-  //   },
-  // ]);
-
   const history = useHistory();
 
   const handleStoryClick = (storyId) => {
@@ -111,12 +46,15 @@ function Gallery() {
   };
 
   const handleDeleteStory = (storyId) => {
-    // Add logic to delete the story
     console.log(`Delete story with id ${storyId}`);
-    dispatch(deleteStoryRequest(storyId));
 
-    // remove it from the state or refresh the list.
+    const shouldDelete = confirm("Are you sure you want to delete this story?"); // Ask for confirmation
+    if (shouldDelete) {
+      dispatch(deleteStoryRequest(storyId));
+    }
   };
+
+  
 
   return (
     <Grid container spacing={4} style={{ padding: "24px" }}>
@@ -180,3 +118,69 @@ function Gallery() {
 }
 
 export default Gallery;
+
+// old dummy data
+// const [tempStories] = useState([
+//   {
+//     id: 1,
+//     title: "The Adventure Begins",
+//     summary: "An exciting journey starts in the heart of the ancient woods.",
+//   },
+//   {
+//     id: 2,
+//     title: "Lost in Time",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+//   {
+//     id: 3,
+//     title: "The Last Stand",
+//     summary:
+//       "Heroes face their toughest challenge yet in a battle to save the world.",
+//   },
+//   {
+//     id: 4,
+//     title: "The Legend Continues",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+//   {
+//     id: 5,
+//     title: "The Legend Continues",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+//   {
+//     id: 6,
+//     title: "The Legend Continues",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+//   {
+//     id: 7,
+//     title: "The Adventure Begins",
+//     summary: "An exciting journey starts in the heart of the ancient woods.",
+//   },
+//   {
+//     id: 8,
+//     title: "Lost in Time",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+//   {
+//     id: 9,
+//     title: "The Last Stand",
+//     summary:
+//       "Heroes face their toughest challenge yet in a battle to save the world.",
+//   },
+//   {
+//     id: 10,
+//     title: "The Legend Continues",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+//   {
+//     id: 11,
+//     title: "The Legend Continues",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+//   {
+//     id: 12,
+//     title: "The Legend Continues",
+//     summary: "A mysterious tale of time travel and lost civilizations.",
+//   },
+// ]);

@@ -116,26 +116,27 @@ router.put("/:id", (req, res) => {
     });
 });
 
-// ! delete
-router.delete("/:id", (req, res) => {
-  const queryText = 'DELETE FROM "stories" WHERE "id" = $1;';
-  pool
-    .query(queryText, [req.params.id])
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch((error) => {
-      console.log("Error in deleting the story", error);
-      res.sendStatus(500);
-    });
-});
+// // ! delete
+// router.delete("/:id", (req, res) => {
+//   const queryText = 'DELETE FROM "stories" WHERE "id" = $1;';
+//   pool
+//     .query(queryText, [req.params.id])
+//     .then(() => {
+//       res.sendStatus(200);
+//     })
+//     .catch((error) => {
+//       console.log("Error in deleting the story", error);
+//       res.sendStatus(500);
+//     });
+// });
 // ? Route to delete a story
+// ! Enhanced route to ensure authorized deletion
 router.delete("/:id", (req, res) => {
   const queryText = 'DELETE FROM "stories" WHERE "id" = $1 AND "userid" = $2;';
   pool
-    .query(queryText, [req.params.id, req.user.id])
+    .query(queryText, [req.params.id, req.user.id]) // Assumes you have access to req.user
     .then(() => res.sendStatus(200))
-    .catch((err) => res.sendStatus(500));
+    .catch((err) => res.sendStatus(500));  
 });
 
 module.exports = router;
