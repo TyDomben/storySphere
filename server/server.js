@@ -10,7 +10,7 @@ const passport = require("./strategies/user.strategy");
 
 // Route Includes
 const userRouter = require("./routes/user.router");
-// const imagesRouter = require("../server/routes/image.router");
+const imagesRouter = require("../server/routes/image.router");
 const textRouter = require("../server/routes/text.router");
 // const audioRouter = require("../server/routes/audio.router");
 
@@ -30,7 +30,7 @@ app.use(passport.session());
 // TODO add more routes here
 app.use("/api/user", userRouter);
 // app.use("/api/audio", audioRouter);
-// app.use("/api/images", imagesRouter);
+app.use("/api/images", imagesRouter);
 app.use("/api/text", textRouter);
 
 // !Catch-all route to serve React app for unmatched routes

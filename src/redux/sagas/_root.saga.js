@@ -4,7 +4,7 @@ import loginSaga from "./login.saga";
 import registrationSaga from "./registration.saga";
 import userSaga from "./user.saga";
 import watchTextSagas from './text.saga'
-// import watchImageSagas from "./imageSaga";
+import watchImageSagas from "./imageSaga";
 // import watchAudioSagas from "./audioSagas";
 
 // rootSaga is the primary saga.
@@ -21,7 +21,7 @@ export default function* rootSaga() {
     registrationSaga(),
     userSaga(),
     watchTextSagas(),
-    // watchImageSagas(),
+    watchImageSagas(),
     // watchAudioSagas(),
   ]);
 }

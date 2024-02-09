@@ -77,6 +77,11 @@ export const generateStoryFailure = (error) => ({
   type: GENERATE_STORY_FAILURE,
   payload: { error },
 });
+// !! DELETE !!
+export const deleteStoryRequest = (storyId) => ({
+  type: 'DELETE_STORY_REQUEST',
+  payload: storyId,
+});
 
 // Action creators for image-related actions
 export const fetchImagesRequest = () => ({

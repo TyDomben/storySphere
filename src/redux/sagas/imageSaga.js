@@ -5,10 +5,10 @@ import * as actions from "../actions/actions";
 // Worker sagas for images
 function* fetchImagesSaga() {
   try {
-    const response = yield call(axios.get, "/api/images");
-    yield put(actions.fetchImagesSuccess(response.data));
+    const response = yield call(axios.get, '/api/images');
+    yield put({ type: 'FETCH_IMAGES_SUCCESS', payload: response.data });
   } catch (error) {
-    yield put(actions.fetchImagesFailure(error.toString()));
+    yield put({ type: 'FETCH_IMAGES_FAILURE', payload: error.toString() });
   }
 }
 

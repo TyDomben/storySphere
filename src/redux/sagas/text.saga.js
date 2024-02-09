@@ -1,14 +1,15 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import * as actions from "../actions/actions";
+import { fetchStoriesSuccess, fetchStoriesFailure } from "../actions/actions";
 
 // Fetch stories from the server
 function* fetchStoriesSaga() {
   try {
     const response = yield call(axios.get, "/api/text");
-    yield put(actions.fetchStoriesSuccess(response.data));
+    yield put(fetchStoriesSuccess(response.data));
   } catch (error) {
-    yield put(actions.fetchStoriesFailure(error.toString()));
+    yield put(fetchStoriesFailure(error.toString()));
   }
 }
 
@@ -23,11 +24,21 @@ function* addStorySaga(action) {
     // Optional: Implement follow-up actions after successful story addition
     // For example, you might want to redirect the user to the story list or the newly added story
     // Or, you could refetch the list of stories to include the newly added story
-    // yield put(actions.fetchStoriesRequest()); //! Uncomment to refetch stories
-
+    yield put(actions.fetchStoriesRequest()); //! Uncomment to refetch stories
   } catch (error) {
     // Dispatch failure action if the API call fails
     yield put(actions.addStoryFailure(error.toString()));
+  }
+}
+//  !! DELETE !!
+function* deleteStorySaga(action) {
+  try {
+    yield call(axios.delete, `/api/text/${action.payload}`);
+    yield put({ type: "DELETE_STORY_SUCCESS", payload: action.payload });
+    // ? Consider fetching the updated list of stories here
+    yield put(fetchStoriesRequest());
+  } catch (error) {
+    yield put({ type: "DELETE_STORY_FAILURE", payload: error.message });
   }
 }
 
