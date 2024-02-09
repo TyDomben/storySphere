@@ -2,7 +2,6 @@
 -- You must use double quotes in every query that user is in:
 -- ex. SELECT * FROM "user";
 -- Otherwise you will have errors!
-DROP TABLE IF EXISTS "user";
 
 CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
@@ -11,7 +10,6 @@ CREATE TABLE "user" (
     "email" varchar(255)
 );
 
-DROP TABLE IF EXISTS "stories";
 
 CREATE TABLE "stories" (
     "id" SERIAL PRIMARY KEY,
@@ -22,7 +20,6 @@ CREATE TABLE "stories" (
     "userid" INT REFERENCES "user"
 );
 
-DROP TABLE IF EXISTS "images";
 
 CREATE TABLE "images" (
     "id" SERIAL PRIMARY KEY,
@@ -31,7 +28,6 @@ CREATE TABLE "images" (
     "storyid" INT REFERENCES "stories"
 );
 
-DROP TABLE IF EXISTS "audios";
 
 CREATE TABLE "audios" (
     "id" SERIAL PRIMARY KEY,
@@ -66,3 +62,5 @@ INSERT INTO "images" (url, caption, storyid) VALUES ('https://loremflickr.com/32
 -- Images related to "Buddy's First Walk"
 INSERT INTO "images" (url, caption, storyid) VALUES ('/images/buddy-park.jpg', 'Buddy making friends in the park', 2);
 INSERT INTO "images" (url, caption, storyid) VALUES ('/images/buddy-duck.jpg', 'Buddy meeting a duck', 2);
+
+
