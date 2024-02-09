@@ -9,7 +9,6 @@ import {
   Switch,
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
@@ -28,14 +27,15 @@ function App() {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
 
+  // Set the initial theme mode to light
   const [mode, setMode] = useState("light");
 
   // Toggle theme mode
   const toggleTheme = () => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
-  // Pass `toggleTheme` to components that need it (e.g., via props or context)
 
+  // Fetch user data from the database
   useEffect(() => {
     dispatch({ type: "FETCH_USER" });
   }, [dispatch]);
@@ -66,7 +66,7 @@ function App() {
             }
           />
           {/* Remove the duplicate "/home" route as it is the same as the root "/" */}
-
+          {/* ? do i need to protect the subURLs ? */}
           <ProtectedRoute exact path="/gallery" component={Gallery} />
           <Route exact path="/gallery/:storyId" component={DetailedStoryPage} />
           <Route exact path="/edit/:storyId" component={EditStoryPage} />

@@ -1,26 +1,57 @@
-import React from 'react';
-import LoginForm from '../LoginForm/LoginForm';
-import { useHistory } from 'react-router-dom';
+import React from "react";
+import { useHistory } from "react-router-dom";
+import LoginForm from "../LoginForm/LoginForm";
+import { Container, Typography, Button, Paper, Box } from "@mui/material";
 
 function LoginPage() {
   const history = useHistory();
 
   return (
-    <div>
-      <LoginForm />
-
-      <center>
-        <button
-          type="button"
-          className="btn btn_asLink"
-          onClick={() => {
-            history.push('/registration');
-          }}
+    <Container
+      component="main"
+      maxWidth="sm"
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      <Paper
+        elevation={6}
+        sx={{
+          padding: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ marginBottom: 3 }}
         >
-          Register
-        </button>
-      </center>
-    </div>
+          Welcome Back
+        </Typography>
+        <LoginForm />
+        <Box mt={4} width="100%">
+          <Typography variant="body1" gutterBottom>
+            Don't have an account?
+          </Typography>
+          <Button
+            fullWidth
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              history.push("/registration");
+            }}
+          >
+            Register
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
   );
 }
 

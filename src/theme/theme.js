@@ -1,4 +1,5 @@
 // src/theme/theme.js
+// !this is a neccesary file - the declaration of dark and light mode at the bottom
 import { createTheme } from "@mui/material/styles";
 // https://mui.com/material-ui/customization/dark-mode/
 const getDesignTokens = (mode) => ({

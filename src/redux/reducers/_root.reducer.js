@@ -1,7 +1,9 @@
 import { combineReducers } from "redux";
 import errors from "./errors.reducer";
 import user from "./user.reducer";
-
+import textReducer from "../reducers/text.reducer";
+import imageReducer from "../reducers/image.reducer";
+import audioReducer from "../reducers/audio.reducer";
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
 // This is imported in index.js as rootSaga
@@ -11,7 +13,9 @@ import user from "./user.reducer";
 const rootReducer = combineReducers({
   errors,
   user,
-  // theme,
+  text: textReducer,
+  image: imageReducer,
+  audio: audioReducer,
 });
 
 export default rootReducer;
