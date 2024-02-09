@@ -3,6 +3,7 @@ import axios from "axios";
 import * as actions from "../actions/actions";
 import { fetchStoriesSuccess, fetchStoriesFailure } from "../actions/actions";
 
+
 // Fetch stories from the server
 function* fetchStoriesSaga() {
   try {
@@ -35,8 +36,11 @@ function* deleteStorySaga(action) {
   try {
     yield call(axios.delete, `/api/text/${action.payload}`);
     yield put({ type: "DELETE_STORY_SUCCESS", payload: action.payload });
-    // ? Consider fetching the updated list of stories here
-    yield put(fetchStoriesRequest());
+    const shouldRefetch = confirm("Do you want to update the story list?");
+    if (shouldRefetch) {
+      yield put(fetchStoriesRequest());
+    }
+
   } catch (error) {
     yield put({ type: "DELETE_STORY_FAILURE", payload: error.message });
   }
@@ -53,4 +57,6 @@ export default function* watchTextSagas() {
   yield takeLatest(actions.FETCH_STORIES_REQUEST, fetchStoriesSaga);
   yield takeLatest(actions.ADD_STORY_REQUEST, addStorySaga);
   yield takeLatest(actions.GENERATE_STORY_REQUEST, generateStorySaga);
+  yield takeLatest(actions.DELETE_STORY_REQUEST, deleteStorySaga); //! DELETE !!
+  
 }
