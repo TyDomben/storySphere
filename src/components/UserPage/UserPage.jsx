@@ -1,21 +1,28 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Container, Typography, Button, Box } from '@mui/material';
 import LogOutButton from '../LogOutButton/LogOutButton';
-import {useSelector} from 'react-redux';
-// import { Container, Typography, Button, Box } from '@mui/material';
-// import LogOutButton from '../LogOutButton/LogOutButton'; 
-// Ensure this component is adapted to use MUI Button if not already
-// TODO make this page more interesting !
+
 function UserPage() {
-  // this component doesn't do much to start, just renders some user reducer info to the DOM
   const user = useSelector((store) => store.user);
+
   return (
-    <div className="container">
-      <h2>Welcome, {user.username}!</h2>
-      <p>Your ID is: {user.id}</p>
-      <LogOutButton className="btn" />
-    </div>
+    <Container sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundImage: 'url(path/to/your/v-puppy/background.jpg)', backgroundSize: 'cover' }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Welcome, {user.username}!
+      </Typography>
+      <Typography variant="subtitle1">
+        Your ID is: {user.id}
+      </Typography>
+      <Box sx={{ mt: 2 }}>
+        <LogOutButton className="btn" />
+        {/* Example Button for additional actions */}
+        <Button variant="contained" color="primary" sx={{ ml: 2 }}>
+          Do Something
+        </Button>
+      </Box>
+    </Container>
   );
 }
 
-// this allows us to use <App /> in index.js
 export default UserPage;
