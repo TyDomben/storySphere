@@ -1,45 +1,74 @@
 import React from "react";
 import { Container, Grid, Typography, Link } from "@mui/material";
+// import { createTheme } from "@mui/material/styles";
+
+// const theme = createTheme();
 
 function Footer() {
-  // Define an array of links for easy mapping
-  // this makes an easier edit in the future
   const linkSections = [
-    { label: "Home", path: "/home" },
+    { label: "Home", path: "/" },
     { label: "Desk", path: "/desk" },
     { label: "Gallery", path: "/gallery" },
     { label: "About", path: "/about" },
   ];
 
-  // Define an array for the company info sections
-  // this makes an easier edit in the future
-  // TODO make these links like above? maybe just all to my github or something?
   const infoSections = [
-    "Newsletter Sign-up",
-    "Contact Information",
-    "Legal",
-    "Accessibility",
-    "Awards/Certifications",
-    "Copyright Notice",
-  ];
+    {
+      label: "Newsletter Sign-up",
+      path: "https://github.com/TyDomben/TyDomben",
+    },
+    {
+      label: "Contact Information",
+      path: "https://github.com/TyDomben/TyDomben",
+    },
+    { label: "Legal", path: "https://github.com/TyDomben/TyDomben" },
 
+    { label: "Accessibility", path: "https://github.com/TyDomben/TyDomben" },
+    {
+      label: "Awards/Certifications",
+      path: "https://github.com/TyDomben/TyDomben",
+    },
+    { label: "Copyright Notice", path: "https://github.com/TyDomben/TyDomben" },
+    { label: "Privacy Policy", path: "https://github.com/TyDomben/TyDomben" },
+    { label: "Terms of Service", path: "https://github.com/TyDomben/TyDomben" },
+    { label: "Cookies Policy", path: "https://github.com/TyDomben/TyDomben" },
+    {
+      label: "Accessibility Statement",
+      path: "https://github.com/TyDomben/TyDomben",
+    },
+    { label: "Disclaimer", path: "https://github.com/TyDomben/TyDomben" },
+    { label: "Sitemap", path: "https://github.com/TyDomben/TyDomben" },
+    { label: "RSS Feed", path: "https://github.com/TyDomben/TyDomben" },
+  ];
+  {
+    /* Footer.jsx */
+  }
   return (
-    <Container component="footer" style={{ padding: "20px 0" }}>
-      <Grid container justifyContent="space-between" alignItems="center">
-        {/* Left side - Production Notice */}
-        <Grid item xs={12} sm={6}>
-          <Typography variant="subtitle1">
+    
+    <Container
+      // component="footer"
+
+      
+      // sx={{
+      //   py: 5, // padding top and bottom
+      //   backgroundColor: "#f7f7f7",
+      //   color: "text.secondary", // theme-based color
+      // }}
+    >
+      <Grid container spacing={2} justifyContent="space-between">
+        {/* Production Notice */}
+        <Grid item xs={12} sm={3}>
+          <Typography variant="body1">
             StorySphere is a Ty Domben production
           </Typography>
         </Grid>
 
-        {/* Right side - Navigation Links */}
-        <Grid item xs={12} sm={6}>
-          {/* Stacking links vertically */}
+        {/* Navigation Links */}
+        <Grid item xs={12} sm={3}>
           <Grid container direction="column" spacing={1}>
             {linkSections.map((section) => (
               <Grid item key={section.label}>
-                <Link href={section.path} variant="body2">
+                <Link href={section.path} variant="body2" color="inherit">
                   {section.label}
                 </Link>
               </Grid>
@@ -47,17 +76,33 @@ function Footer() {
           </Grid>
         </Grid>
 
-        {/* Company Info Sections */}
-
-        {/* Aligns items to the end of the grid container (right side) */}
-        {/* TODO : Stacking links vertically  I've spent enough time on this for right now */}
-        <Grid container direction="column" justifyContent="flex-end" spacing={1}>
-          {/* The map function will render each item in the infoSections array */}
-          {infoSections.map((info) => (
-            <Grid item key={info}>
-              <Typography variant="body2">{info}</Typography>
-            </Grid>
-          ))}
+        {/* Company Info Links */}
+        {/* Split into two columns */}
+        <Grid item xs={12} sm={3}>
+          <Grid container direction="column" spacing={1}>
+            {infoSections
+              .slice(0, Math.ceil(infoSections.length / 2))
+              .map((info) => (
+                <Grid item key={info.label}>
+                  <Link href={info.path} variant="body2" color="inherit">
+                    {info.label}
+                  </Link>
+                </Grid>
+              ))}
+          </Grid>
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Grid container direction="column" spacing={1}>
+            {infoSections
+              .slice(Math.ceil(infoSections.length / 2))
+              .map((info) => (
+                <Grid item key={info.label}>
+                  <Link href={info.path} variant="body2" color="inherit">
+                    {info.label}
+                  </Link>
+                </Grid>
+              ))}
+          </Grid>
         </Grid>
       </Grid>
     </Container>

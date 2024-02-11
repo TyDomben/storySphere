@@ -10,66 +10,65 @@
 // initially we need to get it to where it's just "todo list" type crud - just to get it done for now.
 // we mayb want to introduce mui - steppers into this if we go so far as to do image and audio generation
 // ! use steppers to make this a seamless process
-// ?first we step into an instructional maybe
-// ?second we step into the prompt
-// ?third we step into the title
-// ?fourth we generate an image to go with it
-// ?then we confirm and save it to our collection
-// ! use steppers to make this a seamless process
+///// ?first we step into an instructional maybe
+///// ?second we step into the prompt
+///// ?third we step into the title
+///// ?fourth we generate an image to go with it
+///// ?then we confirm and save it to our collection
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Paper } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Stepper,
+  Step,
+  StepLabel,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-
 import * as storyActions from "../../redux/actions/actions";
-// import axios from 'axios';
+import axios from 'axios';
 // https://mui.com/material-ui/react-stepper/
 
 function Desk() {
-  const dispatch = useDispatch();
-  // getter and setter for title of story
+  // Stepper State Management
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = ["Input Story Idea", "Craft Title", "Review"];
+
+  // Stepper Navigation Helper
+  const handleNext = () => {
+    setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
+
+  const handleBack = () => {
+    setActiveStep((prev) => Math.max(prev - 1, 0));
+  };
+
+  // Input Field States
+  const [storyIdea, setStoryIdea] = useState("");
   const [title, setTitle] = useState("");
-  // this next line is SUS, this assumes user is in state and we can get id from it? SUS -
-  const userId = useSelector((state) => state.user.id);
 
-  const [inputPrompt, setInputPrompt] = useState("");
-  const [generatedStory, setGeneratedStory] = useState("");
-  const [createImage, setCreateImage] = useState("");
-
-  // TODO this will be for prompting-right now we are going to just do a manual entry
-  const handleGenerateStory = () => {
-    console.log("Generate story feature coming soon...");
-    dispatch(storyActions.generateStoryRequest(inputPrompt));
-  };
-  const handleAddImageToStory = () => {
-    // TODO: Replace with actual logic to set the image URL
-    console.log("Add image feature coming soon...");
-    setCreateImage("URL-of-the-generated-image");
-  };
-
-  const handleAddStoryToCollection = () => {
-    const newStory = {
-      title,
-      content: inputPrompt,
-      userid: userId, // Use the dynamically fetched user ID from that SUS statement above - the one i described as SUS
-    };
-
-    console.log(newStory);
-    // Dispatch the action
-    dispatch(storyActions.addStoryRequest(newStory));
-    // Reset form
-    setTitle("");
-    setInputPrompt("");
-  };
-
-  return (
-    <Box sx={{ flexGrow: 1, p: 2 }}>
-      <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography variant="h4" gutterBottom>
-          Writing Desk
-        </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
-          {/* TODO this will be for prompting-right now we are going to just do a manual entry */}
-
+  // Dynamic Rendering of Step Content
+  const renderStepContent = () => {
+    switch (activeStep) {
+      // step 1 - input story idea
+      case 0:
+        return (
+          <TextField
+            label="Describe Your Story Idea"
+            multiline
+            rows={4}
+            value={storyIdea}
+            onChange={(e) => setStoryIdea(e.target.value)}
+            variant="outlined"
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+        );
+        // step 2 - craft title
+      case 1:
+        return (
           <TextField
             label="Story Title"
             value={title}
@@ -78,58 +77,59 @@ function Desk() {
             fullWidth
             sx={{ mb: 2 }}
           />
-          <TextField
-            label="Input Prompt"
-            multiline
-            rows={2}
-            value={inputPrompt}
-            onChange={(e) => setInputPrompt(e.target.value)}
-            variant="outlined"
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Story Content"
-            multiline
-            rows={4}
-            value={inputPrompt}
-            onChange={(e) => setInputPrompt(e.target.value)}
-            variant="outlined"
-            fullWidth
-            disabled={true}
-            sx={{ mb: 2 }}
-          />
+        );
+        // step 3 - review
+      case 2:
+        return (
+          <div>
+            <Typography sx={{ mb: 2 }}>Your Story Idea: {storyIdea}</Typography>
+            <Typography sx={{ mb: 2 }}>Title: {title}</Typography>
+
+            <Button variant="outlined" onClick={handleBack}>
+              Edit
+            </Button>
+            <Button
+              variant="outlined"
+              // ? Add Story to Collection with API save here!
+            >
+              Save Story
+            </Button>
+          </div>
+        );
+      default:
+        return "Something went wrong";
+    }
+  };
+
+  return (
+    <Box sx={{ flexGrow: 1, p: 2 }}>
+      <Paper>
+        <Typography variant="h4" gutterBottom>
+          Writing Desk
+        </Typography>
+
+        <Stepper activeStep={activeStep}>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        {renderStepContent()}
+
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
           <Button
-            variant="contained"
-            onClick={handleGenerateStory}
-            disabled={false}
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
           >
-            Generate Story (prototype)
+            Back
+          </Button>
+          <Button variant="outlined" onClick={handleNext}>
+            {activeStep === steps.length - 1 ? "Done" : "Next"}
           </Button>
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Generated Story:
-          </Typography>
-          <Typography sx={{ mb: 2 }}>{generatedStory}</Typography>
-          <TextField
-            label="Generated Image URL"
-            value={createImage}
-            onChange={(e) => setCreateImage(e.target.value)}
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <Button variant="contained" onClick={handleAddImageToStory}>
-            Add Image to Story
-          </Button>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddStoryToCollection}
-        >
-          Add Story to Collection
-        </Button>
       </Paper>
     </Box>
   );

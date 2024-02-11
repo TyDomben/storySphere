@@ -4,21 +4,21 @@ const router = express.Router();
 const OpenAI = require("openai").default;
 // Initialize OpenAI with your API key
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
-// !!!! temp post route
-router.post("/", (req, res) => {
-  const { title, content, userid } = req.body; // Ensure you're receiving userid correctly, either from req.body or req.user depending on your auth setup
-  const queryText =
-    "INSERT INTO stories (title, content, userid) VALUES ($1, $2, $3) RETURNING id;";
-  pool
-    .query(queryText, [title, content, userid])
-    .then((result) => res.status(201).json(result.rows[0])) // Send back the inserted story's ID
-    .catch((err) => {
-      console.error("Error adding new story", err);
-      res.sendStatus(500);
-    });
-});
+// // !!!! temp post route
+// router.post("/", (req, res) => {
+//   const { title, content, userid } = req.body; // Ensure you're receiving userid correctly, either from req.body or req.user depending on your auth setup
+//   const queryText =
+//     "INSERT INTO stories (title, content, userid) VALUES ($1, $2, $3) RETURNING id;";
+//   pool
+//     .query(queryText, [title, content, userid])
+//     .then((result) => res.status(201).json(result.rows[0])) // Send back the inserted story's ID
+//     .catch((err) => {
+//       console.error("Error adding new story", err);
+//       res.sendStatus(500);
+//     });
+// });
 
-// ! Get all stories
+// * Get all stories
 router.get("/", (req, res) => {
   const queryText = 'SELECT * FROM "stories";';
   pool
@@ -32,7 +32,7 @@ router.get("/", (req, res) => {
     });
 });
 
-// !Get a specific story
+// *Get a specific story
 router.get("/:id", (req, res) => {
   const queryText = 'SELECT * FROM "stories" WHERE "id" = $1;';
   pool
@@ -46,48 +46,29 @@ router.get("/:id", (req, res) => {
     });
 });
 
-// !POST route template
-
-// New POST endpoint for generating a story
+// *POST route template
 router.post("/generate", async (req, res) => {
   const { prompt } = req.body;
   try {
-    // Replace 'createChatCompletion' with the appropriate method from your SDK version
     const completion = await openai.createCompletion({
-      model: "text-davinci-003", // or whichever model you're using
+      model: "text-davinci-003", // Update model as necessary
       prompt: prompt,
-      max_tokens: 50, // adjust as needed
-    });
-    const generatedText = completion.choices[0].text.trim();
-
-    // Now save the generated story to the database
-    const insertText = `INSERT INTO "stories" ("title", "content", "userid") VALUES ($1, $2, $3) RETURNING "id";`;
-    const storyResult = await pool.query(insertText, [
-      "Generated Story",
-      generatedText,
-      req.user.id,
-    ]);
-    // ?? temp POST route
-    router.post("/", (req, res) => {
-      const queryText =
-        "INSERT INTO stories (title, content, userid) VALUES ($1, $2, $3)";
-      pool
-        .query(queryText, [req.body.title, req.body.content, req.user.id])
-        .then(() => res.sendStatus(201))
-        .catch((err) => {
-          /* handle error */
-        });
+      max_tokens: 50,
+      temperature: 0.7,
     });
 
-    // Send back the ID of the new story
-    res.json({ newStoryId: storyResult.rows[0].id });
+    // Assuming the text you want is in the first choice's text.
+    const generatedText = completion.data.choices[0].text.trim();
+
+    // Send back the generated text as the response
+    res.json({ story: generatedText });
   } catch (error) {
     console.error("Error generating story with OpenAI:", error);
     res.status(500).send("Failed to generate story");
   }
 });
 
-// ! put
+// * put
 router.put("/:id", (req, res) => {
   const { title, content } = req.body;
   const queryText = `UPDATE "stories" SET "title" = $1, "content" = $2, "lastupdateddate" = NOW() WHERE "id" = $3;`;
@@ -119,11 +100,11 @@ router.put("/:id", (req, res) => {
 });
 
 // ? Route to delete a story
-// ! Enhanced route to ensure authorized deletion
+// * Enhanced route to ensure authorized deletion
 router.delete("/:id", (req, res) => {
   const queryText = 'DELETE FROM "stories" WHERE "id" = $1 AND "userid" = $2;';
   pool
-    .query(queryText, [req.params.id, req.user.id]) 
+    .query(queryText, [req.params.id, req.user.id])
     .then(() => res.sendStatus(200))
     .catch((err) => res.sendStatus(500));
 });

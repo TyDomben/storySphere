@@ -1,37 +1,88 @@
-import React from "react";
-import { Container, Typography, Paper } from "@mui/material";
-// Typography is the art of arranging letters and text to make written language legible, readable, and visually appealing. - from internet search
-// This is one of our simplest components
-// It doesn't have local state,
-// It doesn't dispatch any redux actions or display any part of redux state
-// or even care what the redux state is'
+import React, { useState } from "react";
+import {
+  Container,
+  Typography,
+  Paper,
+  TextField,
+  Button,
+  Box,
+  Link,
+} from "@mui/material";
 
 function AboutPage() {
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Dispatch the email to your store or server
+    console.log(email);
+    // Show a confirmation message or send a confirmation email
+  };
+
   return (
     <Container component="main" maxWidth="md">
-      {/* // Container - center horizontally // component - the main one // maxWidth
-      - the max width of the container - medium here */}
-      <Paper elevation={6} style={{ padding: "2rem" }}>
-        {/* rem unit means "The root element's font-size */}
-        {/* // Paper somewhere to place MUI components - like a sheet of paper //
-        elevation - the elevation of the paper - 6 here - like a shadow */}
+      <Paper elevation={6} sx={{ p: 4 }}>
         <Typography variant="body1">
-          StorySphere is a cutting-edge digital storytelling platform that
-          redefines the way stories are told, shared, and experienced in the
-          digital age. With StorySphere, users can bring their narratives to
-          life through text, with the possibility of enhancement with
-          AI-generated images and immersive audio soundscapes, creating a
-          multi-sensory storytelling experience.
+          Storysphere is a labor of love. I'm Ty the "Author" of this
+          application and I want to thank you for checking this out. I hope you
+          enjoy it.
         </Typography>
-        <Typography variant="body1" style={{ marginTop: "1rem" }}> 
-        {/* using style from inline styling instead of sx from MUI */}
-          We believe in empowering people to share their stories in the most
-          engaging way possible, utilizing the latest advancements in artificial
-          intelligence and multimedia technology. Our mission is to create a
-          community where every voice can be heard and every story can be
-          brought to life.
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          I'm looking for full time employment following my graduation from
+          Prime and encourage you to check out my Github and LinkedIn.
+          <Link
+            href="https://github.com/[your-github-username]"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub{" "}
+          </Link>{" "}
+          and
+          <Link
+            href="https://www.linkedin.com/in/[your-linkedin-profile]"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn{" "}
+          </Link>
+          .
         </Typography>
-        <Typography variant="body1" style={{ marginTop: "1rem" }}> StorySphere: Where Words Come to Life…</Typography>
+
+        <Typography variant="body1" style={{ marginTop: "1rem" }}>
+          {" "}
+          StorySphere: Where Words Come to Life…
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Join Our Newsletter
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            (It's a great way to practice CRUD...
+            <Link
+              href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              learn more
+            </Link>
+            )
+          </Typography>
+          <TextField
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <Button type="submit" fullWidth variant="contained" sx={{ mb: 2 }}>
+            Sign Up
+          </Button>
+        </Box>
       </Paper>
     </Container>
   );

@@ -13,7 +13,6 @@ import {
   DELETE_STORY_FAILURE,
 } from "../actions/actions";
 
-
 const initialState = {
   stories: [], // Array to hold our story "kittens"
   isLoading: false,
@@ -22,6 +21,17 @@ const initialState = {
 
 const textReducer = (state = initialState, action) => {
   switch (action.type) {
+    case action.GENERATE_STORY_SUCCESS:
+      return {
+        ...state,
+        stories: [...state.stories, action.payload.story],
+        error: null,
+      };
+    case action.GENERATE_STORY_FAILURE:
+      return {
+        ...state,
+        error: action.payload.error,
+      };
     case FETCH_STORIES_REQUEST:
       return { ...state, isLoading: true };
     case FETCH_STORIES_SUCCESS:
