@@ -8,16 +8,16 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  // useTheme,
+  // useTheme,// inherited right now
 } from "@mui/material";
 import LogOutButton from "../LogOutButton/LogOutButton";
-import { useTheme } from "../../theme/ThemeContext";
+// import { useTheme } from "../../theme/ThemeContext"; // inherited right now
 
 function Nav({ toggleTheme }) {
   // Receive toggleTheme as a prop
   const [mode, setMode] = useState("light");
   const user = useSelector((store) => store.user);
-  const theme = useTheme(); // Access the current theme
+  // const theme = useTheme(); // Access the current theme // inherited right now
   // Load on Mount - Check Local Storage first
   useEffect(() => {
     const storedMode = localStorage.getItem("themeMode");
