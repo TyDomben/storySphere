@@ -79,9 +79,9 @@ export const addStoryFailure = (error) => ({
   payload: error,
 });
 
-export const generateStoryRequest = (prompt) => ({
+export const generateStoryRequest = (prompt, userId) => ({
   type: GENERATE_STORY_REQUEST,
-  payload: { prompt },
+  payload: { prompt, userId },
 });
 export const generateStorySuccess = (story) => ({
   type: GENERATE_STORY_SUCCESS,

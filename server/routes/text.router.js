@@ -54,6 +54,7 @@ router.get("/:id", (req, res) => {
 // *POST route template
 
 router.post("/generate", async (req, res) => {
+  console.log("Received payload:", req.body);
   const { prompt, userId } = req.body; // Extract 'prompt' and 'userId' from the request body
 
   // Prepare the request body for the OpenAI API call

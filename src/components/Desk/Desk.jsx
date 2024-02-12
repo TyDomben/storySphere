@@ -95,9 +95,16 @@ function Desk() {
             <Button
               variant="outlined"
               // ! Add Story to Collection with API save here!
+              // hardcode for testing will switch to something like this -
+              // Example of getting userId from a global state or similar // const userId = useSelector(state => state.user.id); \
+              // Then, when dispatching: // onClick={() => dispatch(storyActions.generateStoryRequest(storyIdea, userId))}
+
               onClick={() =>
                 dispatch(
-                  storyActions.generateStoryRequest({ prompt: storyIdea })
+                  storyActions.generateStoryRequest({
+                    prompt: storyIdea,
+                    userId: 1,
+                  })
                 )
               }
             >

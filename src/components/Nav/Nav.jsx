@@ -68,7 +68,7 @@ function Nav({ toggleTheme }) {
         {user.id ? (
           // Links to show when user is logged in
           <>
-            {/* we need to redirect home to / */}
+            {/* we need to redirect home to specifically - "/"" */}
       
             <Button color="inherit" component={RouterLink} to="/">
               Home

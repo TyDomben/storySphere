@@ -14,7 +14,7 @@ import {
 } from "../actions/actions";
 
 const initialState = {
-  stories: [], // Array to hold our story "kittens"
+  stories: [], 
   isLoading: false,
   error: null,
 };
@@ -61,7 +61,6 @@ const textReducer = (state = initialState, action) => {
     case GENERATE_STORY_REQUEST:
       return { ...state, isLoading: true };
     case GENERATE_STORY_SUCCESS:
-      // This assumes generatedStory adds a single story to our array not three
       return {
         ...state,
         isLoading: false,
@@ -73,7 +72,7 @@ const textReducer = (state = initialState, action) => {
     case DELETE_STORY_SUCCESS:
       return {
         ...state,
-        isLoading: false, // Reset loading on success
+        isLoading: false, 
         stories: state.stories.filter((story) => story.id !== action.payload),
       };
     case DELETE_STORY_FAILURE:
