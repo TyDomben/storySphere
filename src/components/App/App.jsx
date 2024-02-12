@@ -48,8 +48,6 @@ function App() {
         <Switch>
           {/* Define the root path to render the LandingPage */}
           <Route exact path="/" component={LandingPage} />
-          {/* Remove Redirect from "/home" to "/", as it is unnecessary */}
-
           {/* Define other specific routes */}
           <Route exact path="/about" component={AboutPage} />
           <ProtectedRoute exact path="/user" component={UserPage} />
@@ -65,14 +63,22 @@ function App() {
               user.id ? <Redirect to="/user" /> : <RegisterPage />
             }
           />
-          {/* Remove the duplicate "/home" route as it is the same as the root "/" */}
-          {/* ? do i need to protect the subURLs ? */}
+          {/* //? consider un-protecting gallery?  that would make this more alluring - more public facing*/}
           <ProtectedRoute exact path="/gallery" component={Gallery} />
-          <Route exact path="/gallery/:storyId" component={DetailedStoryPage} />
-          <Route exact path="/edit/:storyId" component={EditStoryPage} />
+          <ProtectedRoute
+            exact
+            path="/gallery/:storyId"
+            component={DetailedStoryPage}
+          />
+          <ProtectedRoute
+            exact
+            path="/edit/:storyId"
+            component={EditStoryPage}
+          />
           <ProtectedRoute exact path="/desk" component={Desk} />
 
           {/* Fallback route for 404 Not Found */}
+          {/* //? update fallback to be a more comprehensive page*/}
           <Route render={() => <h1>404 - Page Not Found</h1>} />
         </Switch>
         <Footer />

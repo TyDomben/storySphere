@@ -2,7 +2,7 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import * as actions from "../actions/actions";
 import { fetchStoriesSuccess, fetchStoriesFailure } from "../actions/actions";
-
+import { generateStorySuccess, generateStoryFailure } from "../actions/actions";
 
 // Fetch stories from the server
 function* fetchStoriesSaga() {
@@ -40,16 +40,25 @@ function* deleteStorySaga(action) {
     if (shouldRefetch) {
       yield put(fetchStoriesRequest());
     }
-
   } catch (error) {
     yield put({ type: "DELETE_STORY_FAILURE", payload: error.message });
   }
 }
 
-// Worker saga for generating a story using OpenAI (placeholder)
+// Worker saga for generating a story using OpenAI (prototype)
 function* generateStorySaga(action) {
-  // !Implementation of story generation logic goes here
-  // !For example, call OpenAI's API and then save the generated story
+  try {
+    // Extracting prompt and userId from the payload
+    const { prompt, userId } = action.payload;
+    // Adjust the API call to include both prompt and userId
+    const response = yield call(axios.post, "/api/text/generate", {
+      prompt,
+      userId,
+    });
+    yield put(actions.generateStorySuccess(response.data));
+  } catch (error) {
+    yield put(actions.generateStoryFailure(error.message));
+  }
 }
 
 // Watcher sagas listening for dispatched actions
@@ -57,6 +66,5 @@ export default function* watchTextSagas() {
   yield takeLatest(actions.FETCH_STORIES_REQUEST, fetchStoriesSaga);
   yield takeLatest(actions.ADD_STORY_REQUEST, addStorySaga);
   yield takeLatest(actions.GENERATE_STORY_REQUEST, generateStorySaga);
-  yield takeLatest(actions.DELETE_STORY_REQUEST, deleteStorySaga); //! DELETE !!
-  
+  yield takeLatest(actions.DELETE_STORY_REQUEST, deleteStorySaga); //! DELETE cruD !!
 }

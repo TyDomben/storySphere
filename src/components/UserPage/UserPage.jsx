@@ -24,7 +24,7 @@ function UserPage() {
         <LogOutButton className="btn" />
         {/* Example Button for additional actions */}
         <Button variant="contained" color="primary" sx={{ ml: 2 }}>
-          Do Something
+          PLACEHOLDER BUTTON
         </Button>
       </Box>
     </Container>

@@ -13,15 +13,25 @@ import {
   DELETE_STORY_FAILURE,
 } from "../actions/actions";
 
-
 const initialState = {
-  stories: [], // Array to hold our story "kittens"
+  stories: [], 
   isLoading: false,
   error: null,
 };
 
 const textReducer = (state = initialState, action) => {
   switch (action.type) {
+    case action.GENERATE_STORY_SUCCESS:
+      return {
+        ...state,
+        stories: [...state.stories, action.payload.story],
+        error: null,
+      };
+    case action.GENERATE_STORY_FAILURE:
+      return {
+        ...state,
+        error: action.payload.error,
+      };
     case FETCH_STORIES_REQUEST:
       return { ...state, isLoading: true };
     case FETCH_STORIES_SUCCESS:
@@ -51,7 +61,6 @@ const textReducer = (state = initialState, action) => {
     case GENERATE_STORY_REQUEST:
       return { ...state, isLoading: true };
     case GENERATE_STORY_SUCCESS:
-      // This assumes generatedStory adds a single story to our array not three
       return {
         ...state,
         isLoading: false,
@@ -63,7 +72,7 @@ const textReducer = (state = initialState, action) => {
     case DELETE_STORY_SUCCESS:
       return {
         ...state,
-        isLoading: false, // Reset loading on success
+        isLoading: false, 
         stories: state.stories.filter((story) => story.id !== action.payload),
       };
     case DELETE_STORY_FAILURE:

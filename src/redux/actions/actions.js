@@ -39,20 +39,19 @@ export const GENERATE_AUDIO_REQUEST = "GENERATE_AUDIO_REQUEST";
 export const GENERATE_AUDIO_SUCCESS = "GENERATE_AUDIO_SUCCESS";
 export const GENERATE_AUDIO_FAILURE = "GENERATE_AUDIO_FAILURE";
 
-// !!DELETE!!
+// !!DELETE ROUTE
 export const DELETE_STORY_REQUEST = "DELETE_STORY_REQUEST";
 export const DELETE_STORY_SUCCESS = "DELETE_STORY_SUCCESS";
 export const DELETE_STORY_FAILURE = "DELETE_STORY_FAILURE";
-
-
+// !!DELETE ROUTE
 export const DELETE_IMAGE_REQUEST = "DELETE_IMAGE_REQUEST";
 export const DELETE_IMAGE_SUCCESS = "DELETE_IMAGE_SUCCESS";
 export const DELETE_IMAGE_FAILURE = "DELETE_IMAGE_FAILURE";
-
+// !!DELETE ROUTE
 export const DELETE_AUDIO_REQUEST = "DELETE_AUDIO_REQUEST";
 export const DELETE_AUDIO_SUCCESS = "DELETE_AUDIO_SUCCESS";
 export const DELETE_AUDIO_FAILURE = "DELETE_AUDIO_FAILURE";
-// !!!!
+// !!DELETE ROUTE
 
 // Action creators for text-related actions
 export const fetchStoriesRequest = () => ({
@@ -80,9 +79,9 @@ export const addStoryFailure = (error) => ({
   payload: error,
 });
 
-export const generateStoryRequest = (prompt) => ({
+export const generateStoryRequest = (prompt, userId) => ({
   type: GENERATE_STORY_REQUEST,
-  payload: { prompt },
+  payload: { prompt, userId },
 });
 export const generateStorySuccess = (story) => ({
   type: GENERATE_STORY_SUCCESS,
@@ -92,19 +91,22 @@ export const generateStoryFailure = (error) => ({
   type: GENERATE_STORY_FAILURE,
   payload: { error },
 });
-// !! DELETE !!
+// !! DELETE Route
 export const deleteStoryRequest = (storyId) => ({
   type: "DELETE_STORY_REQUEST",
   payload: storyId,
 });
+// !! DELETE Route
 export const deleteStorySuccess = (storyId) => ({
   type: "DELETE_STORY_SUCCESS",
   payload: storyId,
 });
+// !! DELETE Route
 export const deleteStoryFailure = (error) => ({
   type: "DELETE_STORY_FAILURE",
-  payload: error, 
-}); // !!!!
+  payload: error,
+}); 
+// !! DELETE Route
 // Action creators for image-related actions
 export const fetchImagesRequest = () => ({
   type: FETCH_IMAGES_REQUEST,

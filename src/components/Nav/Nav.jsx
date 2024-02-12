@@ -1,3 +1,4 @@
+// ! add more paths here like /user, login - register as seperate components, etc.
 import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,18 +9,16 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  // useTheme,
+  // useTheme,// inherited right now
 } from "@mui/material";
 import LogOutButton from "../LogOutButton/LogOutButton";
-import { useTheme } from "../../theme/ThemeContext";
-
-// Import the toggleTheme action from the actions folder
+// import { useTheme } from "../../theme/ThemeContext"; // inherited right now
 
 function Nav({ toggleTheme }) {
   // Receive toggleTheme as a prop
   const [mode, setMode] = useState("light");
   const user = useSelector((store) => store.user);
-  // const theme = useTheme(); // Access the current theme
+  // const theme = useTheme(); // Access the current theme // inherited right now
   // Load on Mount - Check Local Storage first
   useEffect(() => {
     const storedMode = localStorage.getItem("themeMode");
@@ -33,11 +32,6 @@ function Nav({ toggleTheme }) {
     localStorage.setItem("themeMode", mode);
   }, [mode]); // Run effect every time 'mode' changes.
 
-  // const handleThemeChange = () => {
-  //   setMode((prevMode) => (prevMode === "light" ? "dark" : "light")); // Toggle State
-  // };
-  // const { toggleTheme, themeMode } = useTheme(); // Use this for toggling and displaying the theme
-
   return (
     <AppBar position="static">
       <Toolbar>
@@ -47,10 +41,8 @@ function Nav({ toggleTheme }) {
           to="/"
           sx={{
             flexGrow: 1,
-            // Access theme colors (needs proper ThemeProvider setup still)
-
-            // color: theme.palette.text.primary, // Dynamically set the text color based on the theme
-            textDecoration: "none", // Optional: Removes underline from the link
+            color: "inherit", // * Inherit color from parent
+            textDecoration: "none",
           }}
         >
           {" "}
@@ -76,7 +68,9 @@ function Nav({ toggleTheme }) {
         {user.id ? (
           // Links to show when user is logged in
           <>
-            <Button color="inherit" component={RouterLink} to="/user">
+            {/* we need to redirect home to specifically - "/"" */}
+      
+            <Button color="inherit" component={RouterLink} to="/">
               Home
             </Button>
             <Button color="inherit" component={RouterLink} to="/gallery">
