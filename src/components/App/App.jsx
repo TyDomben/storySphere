@@ -63,7 +63,7 @@ function App() {
               user.id ? <Redirect to="/user" /> : <RegisterPage />
             }
           />
-          {/* //? consider un-protecting gallery? */}
+          {/* //? consider un-protecting gallery?  that would make this more alluring - more public facing*/}
           <ProtectedRoute exact path="/gallery" component={Gallery} />
           <ProtectedRoute
             exact

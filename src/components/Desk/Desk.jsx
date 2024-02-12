@@ -28,13 +28,21 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import * as storyActions from "../../redux/actions/actions";
-import axios from 'axios';
+import axios from "axios";
 // https://mui.com/material-ui/react-stepper/
 
 function Desk() {
+  // Invoke useDispatch inside the component to get the dispatch function
+  const dispatch = useDispatch();
   // Stepper State Management
   const [activeStep, setActiveStep] = useState(0);
   const steps = ["Input Story Idea", "Craft Title", "Review"];
+
+  // Input Field States
+  const [storyIdea, setStoryIdea] = useState("");
+  const [title, setTitle] = useState("");
+  // ok so we have title and that doesn't need to go to API that can directly post
+  // the story idea has to be sent to OPENAI API and we need the response to POST to DB
 
   // Stepper Navigation Helper
   const handleNext = () => {
@@ -44,10 +52,6 @@ function Desk() {
   const handleBack = () => {
     setActiveStep((prev) => Math.max(prev - 1, 0));
   };
-
-  // Input Field States
-  const [storyIdea, setStoryIdea] = useState("");
-  const [title, setTitle] = useState("");
 
   // Dynamic Rendering of Step Content
   const renderStepContent = () => {
@@ -66,7 +70,7 @@ function Desk() {
             sx={{ mb: 2 }}
           />
         );
-        // step 2 - craft title
+      // step 2 - craft title
       case 1:
         return (
           <TextField
@@ -78,7 +82,7 @@ function Desk() {
             sx={{ mb: 2 }}
           />
         );
-        // step 3 - review
+      // step 3 - review
       case 2:
         return (
           <div>
@@ -90,9 +94,14 @@ function Desk() {
             </Button>
             <Button
               variant="outlined"
-              // ? Add Story to Collection with API save here!
+              // ! Add Story to Collection with API save here!
+              onClick={() =>
+                dispatch(
+                  storyActions.generateStoryRequest({ prompt: storyIdea })
+                )
+              }
             >
-              Save Story
+              Generate Story
             </Button>
           </div>
         );

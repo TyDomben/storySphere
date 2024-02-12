@@ -1,3 +1,4 @@
+// ! add more paths here like /user, login - register as seperate components, etc.
 import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,9 +1,14 @@
 const express = require("express");
-const pool = require("../modules/pool");
 const router = express.Router();
-const OpenAI = require("openai").default;
-// Initialize OpenAI with your API key
-const openai = new OpenAI(process.env.OPENAI_API_KEY);
+const fetch = require("node-fetch"); 
+const pool = require("../modules/pool"); 
+
+// const OpenAI = require("openai");
+
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+// // !!!! temp post route
 // // !!!! temp post route
 // router.post("/", (req, res) => {
 //   const { title, content, userid } = req.body; // Ensure you're receiving userid correctly, either from req.body or req.user depending on your auth setup
@@ -47,26 +52,62 @@ router.get("/:id", (req, res) => {
 });
 
 // *POST route template
+
 router.post("/generate", async (req, res) => {
-  const { prompt } = req.body;
+  const { prompt, userId } = req.body; // Extract 'prompt' and 'userId' from the request body
+
+  // Prepare the request body for the OpenAI API call
+  const requestBody = {
+    model: "gpt-3.5-turbo",
+    messages: [
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: prompt }
+    ],
+  };
+
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003", // Update model as necessary
-      prompt: prompt,
-      max_tokens: 50,
-      temperature: 0.7,
+    // Make the API call to OpenAI
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Ensure your API key is correctly set in '.env'
+      },
+      body: JSON.stringify(requestBody),
     });
 
-    // Assuming the text you want is in the first choice's text.
-    const generatedText = completion.data.choices[0].text.trim();
+    if (!response.ok) {
+      throw new Error(`Error from OpenAI: ${response.statusText}`);
+    }
 
-    // Send back the generated text as the response
-    res.json({ story: generatedText });
+    const data = await response.json(); // Parse the JSON response from OpenAI
+    const generatedContent = data.choices[0].message.content; // Assuming the structure based on OpenAI's response format
+
+    // Insert the generated content into the "stories" table
+    const insertQuery = `
+      INSERT INTO "stories" (title, content, userid, createddate, lastupdateddate)
+      VALUES ($1, $2, $3, NOW(), NOW())
+      RETURNING *;`;
+    const values = ['Generated Story', generatedContent, userId];
+
+    // Using your existing pool to query your PostgreSQL database
+    const dbResponse = await pool.query(insertQuery, values);
+    const newStory = dbResponse.rows[0]; // The newly inserted story
+
+    // Respond to the client with the new story details
+    res.json({ success: true, story: newStory });
   } catch (error) {
-    console.error("Error generating story with OpenAI:", error);
-    res.status(500).send("Failed to generate story");
+    console.error("Error:", error);
+    res.status(500).send("Failed to generate or save story");
   }
 });
+
+// Simplify to Debug: Temporarily simplify your route to isolate the issue.
+// Try just configuring the OpenAI client and logging it, without making an API call: - 
+// router.post("/generate", async (req, res) => {
+//   console.log("OpenAI Configuration:", configuration);
+//   res.json({ message: "Test successful" });
+// });
 
 // * put
 router.put("/:id", (req, res) => {
