@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const fetch = require("node-fetch"); 
-const pool = require("../modules/pool"); 
+const fetch = require("node-fetch");
+const pool = require("../modules/pool");
+const { log } = require("console");
+const axios = require("axios");
 
 // const OpenAI = require("openai");
 
@@ -62,26 +64,26 @@ router.post("/generate", async (req, res) => {
     model: "gpt-3.5-turbo",
     messages: [
       { role: "system", content: "You are a helpful assistant." },
-      { role: "user", content: prompt }
+      // ?confirm prompt is string and user is what we need { role: "user", content: prompt },
     ],
   };
 
   try {
     // Make the API call to OpenAI
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Ensure your API key is correctly set in '.env'
-      },
-      body: JSON.stringify(requestBody),
-    });
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      requestBody,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Ensure your API key is correctly set in '.env'
+        },
+      }
+    );
 
-    if (!response.ok) {
-      throw new Error(`Error from OpenAI: ${response.statusText}`);
-    }
+    console.log(response);
 
-    const data = await response.json(); // Parse the JSON response from OpenAI
+    const data = response.data; // Parse the JSON response from OpenAI
     const generatedContent = data.choices[0].message.content; // Assuming the structure based on OpenAI's response format
 
     // Insert the generated content into the "stories" table
@@ -89,7 +91,7 @@ router.post("/generate", async (req, res) => {
       INSERT INTO "stories" (title, content, userid, createddate, lastupdateddate)
       VALUES ($1, $2, $3, NOW(), NOW())
       RETURNING *;`;
-    const values = ['Generated Story', generatedContent, userId];
+    const values = ["Generated Story", generatedContent, userId];
 
     // Using your existing pool to query your PostgreSQL database
     const dbResponse = await pool.query(insertQuery, values);
@@ -98,13 +100,13 @@ router.post("/generate", async (req, res) => {
     // Respond to the client with the new story details
     res.json({ success: true, story: newStory });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error:", error.response.data);
     res.status(500).send("Failed to generate or save story");
   }
 });
 
 // Simplify to Debug: Temporarily simplify your route to isolate the issue.
-// Try just configuring the OpenAI client and logging it, without making an API call: - 
+// Try just configuring the OpenAI client and logging it, without making an API call: -
 // router.post("/generate", async (req, res) => {
 //   console.log("OpenAI Configuration:", configuration);
 //   res.json({ message: "Test successful" });
