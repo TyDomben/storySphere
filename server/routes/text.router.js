@@ -35,16 +35,18 @@ router.get("/:id", (req, res) => {
 // *POST route template
 
 router.post("/generate", async (req, res) => {
-  const { prompt, userId } = req.body; // Destructure to extract userId
+  const { prompt, userId, title } = req.body; // Destructure to extract userId
   // Log individual values to ensure they are extracted correctly
+  console.log("just after deconstructure -logged");
   console.log("Received payload:", req.body); // Log to verify structure
   console.log("Prompt:", prompt);
   console.log("UserId:", userId);
+  console.log("Title:", title);
   // Prepare the request body for the OpenAI API call
   const requestBody = {
     model: "gpt-3.5-turbo-0125",
     response_format: { type: "json_object" },
-    // ! I need to eventually modify this so that it is prompted specifically toward a story perspective  
+    // ! I need to eventually modify this so that it is prompted specifically toward a story perspective
     messages: [
       {
         role: "system",
@@ -69,17 +71,20 @@ router.post("/generate", async (req, res) => {
 
     // Assuming the API call is successful and you have your response
     console.log("OpenAI API Response:", response.data);
+    console.log("just after API response -logged");
 
     const generatedContent = response.data.choices[0].message.content;
     console.log("Generated Content:", generatedContent);
+    console.log("just after generated content -logged");
+
     // Insert the generated content into the "stories" table
     const insertQuery = `
       INSERT INTO "stories" (title, content, userid, createddate, lastupdateddate)
       VALUES ($1, $2, $3, NOW(), NOW())
       RETURNING *;`;
-      // ? confirm the values are correct
-    const values = ["Generated Story", generatedContent, userId];
- 
+    // ? confirm the values are correct
+    const values = [title, generatedContent, userId];
+
     // Using your existing pool to query your PostgreSQL database
     const dbResponse = await pool.query(insertQuery, values);
     const newStory = dbResponse.rows[0]; // The newly inserted story

@@ -50,11 +50,12 @@ function* deleteStorySaga(action) {
 function* generateStorySaga(action) {
   try {
     // Extracting prompt and userId from the payload
-    const { prompt, userId } = action.payload;
-    // Adjust the API call to include both prompt and userId
+    const { prompt, userId, title } = action.payload;
+    // Adjust the API call to include both prompt and userId AND title
     const response = yield call(axios.post, "/api/text/generate", {
       prompt,
       userId,
+      title
     });
     yield put(actions.generateStorySuccess(response.data));
   } catch (error) {

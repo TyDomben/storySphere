@@ -81,7 +81,7 @@ export const addStoryFailure = (error) => ({
 
 export const generateStoryRequest = (data) => ({
   type: GENERATE_STORY_REQUEST,
-  payload: data, // This directly uses the data object received, which should include both `prompt` and `userId`
+  payload: data, // This directly uses the data object received, which should include both `prompt` and `userId` and more
 });
 export const generateStorySuccess = (data) => ({
   type: GENERATE_STORY_SUCCESS,
