@@ -6,31 +6,26 @@ function DetailedStoryPage() {
   const { storyId } = useParams();
   const history = useHistory();
 
-  // Placeholder data // should be mapping through gallery 
-  const story = {
-    title: "The Forgotten City",
-    content:
-      "Once upon a time, in a forgotten city, a secret lay hidden for centuries...",
-    author: "Ty Domben",
-    publishedDate: "March 3, 2024",
-    lastUpdated: "March 10, 2024",
-  };
+  // Placeholder data // should be mapping through gallery
+  // ok we are are rendering the correct storyId based on URL but that is all 
+  // notably the contents of the story are also not evident on the gallery page 
+  // i assume the contents are at storyId.contents however that is not rendering 
 
   return (
     <Container maxWidth="md">
       <Box my={4}>
         <Typography variant="h4" component="h1" gutterBottom>
-          {story.title}
+          {storyId.title}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary">
-          By {story.author}
+          By {storyId.author}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Published on {story.publishedDate} | Last updated on{" "}
-          {story.lastUpdated}
+          Published on {storyId.publishedDate} | Last updated on{" "}
+          {storyId.lastUpdated}
         </Typography>
         <Box my={2}>
-          <Typography variant="body1">{story.content}</Typography>
+          <Typography variant="body1">{storyId.content}</Typography>
         </Box>
         <Button
           variant="contained"

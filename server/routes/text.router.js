@@ -4,26 +4,6 @@ const pool = require("../modules/pool");
 const { log } = require("console");
 const axios = require("axios");
 
-// const OpenAI = require("openai");
-
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-// // !!!! temp post route
-// // !!!! temp post route
-// router.post("/", (req, res) => {
-//   const { title, content, userid } = req.body; // Ensure you're receiving userid correctly, either from req.body or req.user depending on your auth setup
-//   const queryText =
-//     "INSERT INTO stories (title, content, userid) VALUES ($1, $2, $3) RETURNING id;";
-//   pool
-//     .query(queryText, [title, content, userid])
-//     .then((result) => res.status(201).json(result.rows[0])) // Send back the inserted story's ID
-//     .catch((err) => {
-//       console.error("Error adding new story", err);
-//       res.sendStatus(500);
-//     });
-// });
-
 // * Get all stories
 router.get("/", (req, res) => {
   const queryText = 'SELECT * FROM "stories";';
@@ -64,6 +44,7 @@ router.post("/generate", async (req, res) => {
   const requestBody = {
     model: "gpt-3.5-turbo-0125",
     response_format: { type: "json_object" },
+    // ! I need to eventually modify this so that it is prompted specifically toward a story perspective  
     messages: [
       {
         role: "system",
@@ -89,7 +70,6 @@ router.post("/generate", async (req, res) => {
     // Assuming the API call is successful and you have your response
     console.log("OpenAI API Response:", response.data);
 
-    // const data = response.data; // Parse the JSON response from OpenAI //! do i still even need this?
     const generatedContent = response.data.choices[0].message.content;
     console.log("Generated Content:", generatedContent);
     // Insert the generated content into the "stories" table
@@ -120,13 +100,6 @@ router.post("/generate", async (req, res) => {
     }
   }
 });
-
-// Simplify to Debug: Temporarily simplify your route to isolate the issue.
-// Try just configuring the OpenAI client and logging it, without making an API call: -
-// router.post("/generate", async (req, res) => {
-//   console.log("OpenAI Configuration:", configuration);
-//   res.json({ message: "Test successful" });
-// });
 
 // * put
 router.put("/:id", (req, res) => {
