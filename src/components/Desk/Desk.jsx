@@ -99,11 +99,15 @@ function Desk() {
               // Example of getting userId from a global state or similar // const userId = useSelector(state => state.user.id); \
               // Then, when dispatching: // onClick={() => dispatch(storyActions.generateStoryRequest(storyIdea, userId))}
 
+              // consider the following -
+              // onClick={() =>
+              //   dispatch(storyActions.generateStoryRequest(storyIdea, 1))
+              // }
               onClick={() =>
                 dispatch(
                   storyActions.generateStoryRequest({
                     prompt: storyIdea,
-                    userId: 1,
+                    userId: 1, // hardcode for testing; will switch to dynamic fetching later
                   })
                 )
               }
