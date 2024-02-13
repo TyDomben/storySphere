@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const fetch = require("node-fetch");
 const pool = require("../modules/pool");
 const { log } = require("console");
 const axios = require("axios");
@@ -56,52 +55,69 @@ router.get("/:id", (req, res) => {
 // *POST route template
 
 router.post("/generate", async (req, res) => {
-  console.log("Received payload:", req.body);
-  const { prompt, userId } = req.body; // Extract 'prompt' and 'userId' from the request body
-
+  const { prompt, userId } = req.body; // Destructure to extract userId
+  // Log individual values to ensure they are extracted correctly
+  console.log("Received payload:", req.body); // Log to verify structure
+  console.log("Prompt:", prompt);
+  console.log("UserId:", userId);
   // Prepare the request body for the OpenAI API call
   const requestBody = {
-    model: "gpt-3.5-turbo",
+    model: "gpt-3.5-turbo-0125",
+    response_format: { type: "json_object" },
     messages: [
-      { role: "system", content: "You are a helpful assistant." },
-      // ?confirm prompt is string and user is what we need { role: "user", content: prompt },
+      {
+        role: "system",
+        content: "You are a helpful assistant. Please respond in JSON format.",
+      },
+      // ?confirm prompt is string and user is what we need
+      { role: "user", content: prompt },
     ],
   };
 
   try {
-    // Make the API call to OpenAI
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       requestBody,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Ensure your API key is correctly set in '.env'
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
       }
     );
 
-    console.log(response);
+    // Assuming the API call is successful and you have your response
+    console.log("OpenAI API Response:", response.data);
 
-    const data = response.data; // Parse the JSON response from OpenAI
-    const generatedContent = data.choices[0].message.content; // Assuming the structure based on OpenAI's response format
-
+    // const data = response.data; // Parse the JSON response from OpenAI //! do i still even need this?
+    const generatedContent = response.data.choices[0].message.content;
+    console.log("Generated Content:", generatedContent);
     // Insert the generated content into the "stories" table
     const insertQuery = `
       INSERT INTO "stories" (title, content, userid, createddate, lastupdateddate)
       VALUES ($1, $2, $3, NOW(), NOW())
       RETURNING *;`;
+      // ? confirm the values are correct
     const values = ["Generated Story", generatedContent, userId];
-
+ 
     // Using your existing pool to query your PostgreSQL database
     const dbResponse = await pool.query(insertQuery, values);
     const newStory = dbResponse.rows[0]; // The newly inserted story
+    console.log("Insert Query:", insertQuery);
+    console.log("DB Insertion Response:", dbResponse.rows[0]);
 
     // Respond to the client with the new story details
-    res.json({ success: true, story: newStory });
+    res.json({ success: true, story: dbResponse.rows[0] });
   } catch (error) {
-    console.error("Error:", error.response.data);
-    res.status(500).send("Failed to generate or save story");
+    if (error.response) {
+      // If the error is related to the HTTP response
+      console.error("Error:", error.response.data);
+      res.status(500).send("Failed to generate or save story");
+    } else {
+      // If the error is not related to the HTTP response
+      console.error("Error:", error.message);
+      res.status(500).send("An unexpected error occurred");
+    }
   }
 });
 

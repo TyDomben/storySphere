@@ -79,17 +79,17 @@ export const addStoryFailure = (error) => ({
   payload: error,
 });
 
-export const generateStoryRequest = (prompt, userId) => ({
+export const generateStoryRequest = (data) => ({
   type: GENERATE_STORY_REQUEST,
-  payload: { prompt, userId },
+  payload: data, // This directly uses the data object received, which should include both `prompt` and `userId`
 });
-export const generateStorySuccess = (story) => ({
+export const generateStorySuccess = (data) => ({
   type: GENERATE_STORY_SUCCESS,
-  payload: { story },
+  payload: data, // Assuming data could be an object containing the story and possibly other relevant information
 });
-export const generateStoryFailure = (error) => ({
+export const generateStoryFailure = (data) => ({
   type: GENERATE_STORY_FAILURE,
-  payload: { error },
+  payload: data, // Assuming data could be an object containing error details and possibly other context
 });
 // !! DELETE Route
 export const deleteStoryRequest = (storyId) => ({

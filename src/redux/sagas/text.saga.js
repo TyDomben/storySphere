@@ -45,6 +45,7 @@ function* deleteStorySaga(action) {
   }
 }
 
+
 // Worker saga for generating a story using OpenAI (prototype)
 function* generateStorySaga(action) {
   try {
