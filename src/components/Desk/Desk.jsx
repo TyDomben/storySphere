@@ -2,6 +2,9 @@
 // This component is responsible for generating a story based on user input.
 // It also allows the user to add the generated story to their collection.
 // It also allows the user to add an image to the story. STRETCH GOAL
+// TODO Button-Done should take the user somewhere - right now it just doesn't
+// TODO UX UI ---feedback if a story is good or loading or bad
+// TODO PRELOAD some input here about "tell me a wholesomestory"
 
 import React, { useState } from "react";
 import {
@@ -30,8 +33,7 @@ function Desk() {
   // Input Field States
   const [storyIdea, setStoryIdea] = useState("");
   const [title, setTitle] = useState("");
-  // ok so we have title and that doesn't need to go to API that can directly post
-  // the story idea has to be sent to OPENAI API and we need the response to POST to DB
+  // these are integral to the steppers - make it much nicer to have a review at the end
 
   // grab userId from the global state
   const userId = useSelector((state) => state.user.id);
@@ -86,24 +88,27 @@ function Desk() {
             </Button>
             <Button
               variant="outlined"
-              // ! Add Story to Collection with API save here!
-              // hardcode for testing will switch to something like this -
-              // Example of getting userId from a global state or similar // const userId = useSelector(state => state.user.id); \
-              // Then, when dispatching: // onClick={() => dispatch(storyActions.generateStoryRequest(storyIdea, userId))}
+              // * Add Story to Collection with API
+              // * ALSO add image to that story
+              onClick={() => {
+                // Dispatch the action to generate an image
+                dispatch(
+                  storyActions.generateImageRequest({
+                    prompt: storyIdea,
+                    caption: title, // Using the title as the caption for the image
+                    userId: userId,
+                  })
+                );
 
-              // consider the following -
-              // onClick={() =>
-              //   dispatch(storyActions.generateStoryRequest(storyIdea, 1))
-              // }
-              onClick={() =>
+                // Then, dispatch the action to generate a story
                 dispatch(
                   storyActions.generateStoryRequest({
                     prompt: storyIdea,
-                    title: title, // Include the title from state
-                    userId: userId, // This should be dynamically fetched based on logged-in user
+                    title: title,
+                    userId: userId,
                   })
-                )
-              }
+                );
+              }}
             >
               Generate Story
             </Button>
@@ -141,6 +146,7 @@ function Desk() {
           </Button>
           <Button variant="outlined" onClick={handleNext}>
             {activeStep === steps.length - 1 ? "Done" : "Next"}
+            {/* //? maybe here i can say GO TO GALLERY? */}
           </Button>
         </Box>
       </Paper>

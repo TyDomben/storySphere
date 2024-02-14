@@ -4,7 +4,7 @@ import loginSaga from "./login.saga";
 import registrationSaga from "./registration.saga";
 import userSaga from "./user.saga";
 import watchTextSagas from './text.saga'
-import watchImageSagas from "./imageSaga";
+import watchImageSagas from "./image.saga";
 // import watchAudioSagas from "./audioSagas";
 
 // rootSaga is the primary saga.

@@ -36,7 +36,7 @@ function DetailedStoryPage() {
           {story.title}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary">
-          By {story.author}
+          By {story.userId}
         </Typography>
         <Typography variant="body2" color="textSecondary">
           Published on {story.publishedDate} | Last updated on {story.lastUpdated}

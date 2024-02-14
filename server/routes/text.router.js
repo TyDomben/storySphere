@@ -52,7 +52,6 @@ router.post("/generate", async (req, res) => {
         role: "system",
         content: "You are a helpful assistant. Please respond in JSON format.",
       },
-      // ?confirm prompt is string and user is what we need
       { role: "user", content: prompt },
     ],
   };

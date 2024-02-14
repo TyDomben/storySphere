@@ -54,8 +54,6 @@ function Gallery() {
     }
   };
 
-  
-
   return (
     <Grid container spacing={4} style={{ padding: "24px" }}>
       {images.map((image) => (
@@ -86,7 +84,7 @@ function Gallery() {
                   {story.title}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  {story.summary}
+                  {story.content}
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -118,5 +116,3 @@ function Gallery() {
 }
 
 export default Gallery;
-
-
