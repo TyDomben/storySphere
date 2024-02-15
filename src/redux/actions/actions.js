@@ -1,4 +1,6 @@
 // actions.js
+// story id to link with image id
+export const SET_LATEST_STORY_ID = "SET_LATEST_STORY_ID";
 
 // Text-related action types
 export const FETCH_STORIES_REQUEST = "FETCH_STORIES_REQUEST";
@@ -53,6 +55,11 @@ export const DELETE_AUDIO_SUCCESS = "DELETE_AUDIO_SUCCESS";
 export const DELETE_AUDIO_FAILURE = "DELETE_AUDIO_FAILURE";
 // !!DELETE ROUTE
 
+// Action Creators
+export const setLatestStoryId = (data) => ({
+  type: SET_LATEST_STORY_ID,
+  payload: data,
+});
 // Action creators for text-related actions
 export const fetchStoriesRequest = () => ({
   type: FETCH_STORIES_REQUEST,

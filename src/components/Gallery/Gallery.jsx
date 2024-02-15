@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -7,110 +7,87 @@ import {
   CardActionArea,
   CardActions,
   IconButton,
+  CardMedia,
 } from "@mui/material";
-import { useHistory } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import * as actions from "../../redux/actions/actions";
 
-const { fetchStoriesRequest, deleteStoryRequest } = actions;
-const { fetchImagesRequest } = actions;
-
-// Gallery component
+// Make sure the path to the default image is correctly referenced
+// Assuming your build process copies the contents of the public folder correctly,
+// and considering the typical structure of a React app, the path should be as follows:
+const defaultImageUrl = "/v-puppy.png"; // Adjusted to use the correct path
 
 function Gallery() {
   const dispatch = useDispatch();
-  const stories = useSelector((state) => state.text.stories); // text from redux store
-  const user = useSelector((state) => state.user); // user from redux store
-  const images = useSelector((state) => state.image.images); // images from redux store
+  const history = useHistory();
+  const stories = useSelector((state) => state.text.stories);
+  const images = useSelector((state) => state.image.images);
 
   useEffect(() => {
-    dispatch(fetchStoriesRequest());
-    dispatch(fetchImagesRequest());
+    dispatch(actions.fetchStoriesRequest());
+    dispatch(actions.fetchImagesRequest());
   }, [dispatch]);
 
-  const history = useHistory();
-
-  const handleStoryClick = (storyId) => {
-    history.push(`/gallery/${storyId}`);
-  };
   const handleViewStory = (storyId) => {
     history.push(`/gallery/${storyId}`);
   };
 
   const handleEditStory = (storyId) => {
-    // Navigate to the edit page for the story
     history.push(`/edit/${storyId}`);
   };
 
   const handleDeleteStory = (storyId) => {
-    console.log(`Delete story with id ${storyId}`);
-
-    const shouldDelete = confirm("Are you sure you want to delete this story?"); // Ask for confirmation
-    if (shouldDelete) {
-      dispatch(deleteStoryRequest(storyId));
+    if (window.confirm("Are you sure you want to delete this story?")) {
+      dispatch(actions.deleteStoryRequest(storyId));
     }
   };
 
   return (
     <Grid container spacing={4} style={{ padding: "24px" }}>
-      {images.map((image) => (
-        <Grid item xs={12} sm={6} md={4} key={image.id}>
-          <Card>
-            <CardActionArea>
-              <img
-                src={image.url}
-                alt={image.caption}
-                style={{ width: "100%" }}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {image.caption}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-      ))}
-      {stories.map((story) => (
-        <Grid item xs={12} sm={6} md={4} key={story.id}>
-          <Card>
-            <CardActionArea onClick={() => handleViewStory(story.id)}>
-              <Card onClick={() => handleStoryClick(story.id)} />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {story.title}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  {story.content}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions disableSpacing>
-              <IconButton
-                aria-label="view story"
-                onClick={() => handleViewStory(story.id)}
-              >
-                <VisibilityIcon />
-              </IconButton>
-              <IconButton
-                aria-label="edit story"
-                onClick={() => handleEditStory(story.id)}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                aria-label="delete story"
-                onClick={() => handleDeleteStory(story.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </CardActions>
-          </Card>
-        </Grid>
-      ))}
+      {stories.map((story) => {
+        // Attempt to find an image that matches the story ID
+        const matchingImage = images.find((img) => img.id === story.id);
+
+        return (
+          <Grid item xs={12} sm={6} md={4} key={story.id}>
+            <Card>
+              <CardActionArea onClick={() => handleViewStory(story.id)}>
+                <CardMedia
+                  component="img"
+                  image={matchingImage ? matchingImage.url : defaultImageUrl}
+                  alt={matchingImage ? matchingImage.caption : "Default image"}
+                  style={{ height: 140, width: '100%', objectFit: 'cover' }} // Ensured the image covers the card area appropriately
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {story.title}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {story.content.length > 100
+                      ? `${story.content.substring(0, 100)}...`
+                      : story.content}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                <IconButton aria-label="view" onClick={() => handleViewStory(story.id)}>
+                  <VisibilityIcon />
+                </IconButton>
+                <IconButton aria-label="edit" onClick={() => handleEditStory(story.id)}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton aria-label="delete" onClick={() => handleDeleteStory(story.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </CardActions>
+            </Card>
+          </Grid>
+        );
+      })}
     </Grid>
   );
 }

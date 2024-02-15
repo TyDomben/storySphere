@@ -45,20 +45,29 @@ function* deleteStorySaga(action) {
   }
 }
 
-
 // Worker saga for generating a story using OpenAI (prototype)
 function* generateStorySaga(action) {
   try {
-    // Extracting prompt and userId from the payload
+    // Extracting prompt, userId, and title from the payload
     const { prompt, userId, title } = action.payload;
-    // Adjust the API call to include both prompt and userId AND title
+
+    // API call to generate the story
     const response = yield call(axios.post, "/api/text/generate", {
       prompt,
       userId,
-      title
+      title,
     });
+
+    // Dispatch success action with the response data
     yield put(actions.generateStorySuccess(response.data));
+
+    // Assuming the story ID is part of the response data and accessible as response.data.id
+    // Dispatch action to set the latest story ID in the Redux store
+    if (response.data && response.data.id) {
+      yield put(actions.setLatestStoryId(response.data.id));
+    }
   } catch (error) {
+    // Dispatch failure action if there's an error
     yield put(actions.generateStoryFailure(error.message));
   }
 }

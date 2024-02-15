@@ -1,11 +1,3 @@
-// * Desk.jsx -- Desk component
-// This component is responsible for generating a story based on user input.
-// It also allows the user to add the generated story to their collection.
-// It also allows the user to add an image to the story. STRETCH GOAL
-// TODO Button-Done should take the user somewhere - right now it just doesn't
-// TODO UX UI ---feedback if a story is good or loading or bad
-// TODO PRELOAD some input here about "tell me a wholesomestory"
-
 import React, { useState } from "react";
 import {
   Box,
@@ -16,42 +8,64 @@ import {
   Stepper,
   Step,
   StepLabel,
+  CircularProgress,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-// useSelector for when we encorporate userId
 import * as storyActions from "../../redux/actions/actions";
-import axios from "axios";
-// https://mui.com/material-ui/react-stepper/
+import { useHistory } from "react-router-dom";
 
 function Desk() {
-  // Invoke useDispatch inside the component to get the dispatch function
   const dispatch = useDispatch();
-  // Stepper State Management
+  const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
-  const steps = ["Input Story Idea", "Craft Title", "Review"];
-
-  // Input Field States
+  const [loading, setLoading] = useState(false);
+  const steps = [
+    "Input Story Idea",
+    "Craft Title",
+    "Review",
+    "Generating Content",
+    "View Gallery",
+  ];
   const [storyIdea, setStoryIdea] = useState("");
   const [title, setTitle] = useState("");
-  // these are integral to the steppers - make it much nicer to have a review at the end
-
-  // grab userId from the global state
   const userId = useSelector((state) => state.user.id);
 
-  // Stepper Navigation Helper
   const handleNext = () => {
-    setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
+    if (activeStep === 2) {
+      // On review step
+      setLoading(true);
+      // Immediately provide feedback that content generation is underway
+      setTimeout(() => {
+        setLoading(false);
+        setActiveStep((prev) => prev + 1); // Move to generating content step
+      }, 10000); // Simulated generation delay
+
+      // Trigger content generation
+      dispatch(
+        storyActions.generateStoryRequest({
+          prompt: storyIdea,
+          title,
+          userId,
+        })
+      );
+      dispatch(
+        storyActions.generateImageRequest({
+          prompt: storyIdea,
+          caption: title,
+          userId,
+        })
+      );
+    } else {
+      setActiveStep((prev) => prev + 1);
+    }
   };
 
-  const handleBack = () => {
-    setActiveStep((prev) => Math.max(prev - 1, 0));
-  };
+  const handleBack = () => setActiveStep((prev) => Math.max(prev - 1, 0));
+  const goToGallery = () => history.push("/gallery");
 
-  // Dynamic Rendering of Step Content
   const renderStepContent = () => {
     switch (activeStep) {
-      // step 1 - input story idea
-      case 0:
+      case 0: // Story Idea Input
         return (
           <TextField
             label="Describe Your Story Idea"
@@ -59,63 +73,58 @@ function Desk() {
             rows={4}
             value={storyIdea}
             onChange={(e) => setStoryIdea(e.target.value)}
-            variant="outlined"
             fullWidth
             sx={{ mb: 2 }}
           />
         );
-      // step 2 - craft title
-      case 1:
+      case 1: // Title Crafting
         return (
           <TextField
             label="Story Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            variant="outlined"
             fullWidth
             sx={{ mb: 2 }}
           />
         );
-      // step 3 - review
-      case 2:
+      case 2: // Review Inputs
         return (
-          <div>
-            <Typography sx={{ mb: 2 }}>Your Story Idea: {storyIdea}</Typography>
-            <Typography sx={{ mb: 2 }}>Title: {title}</Typography>
-
-            <Button variant="outlined" onClick={handleBack}>
-              Edit
-            </Button>
-            <Button
-              variant="outlined"
-              // * Add Story to Collection with API
-              // * ALSO add image to that story
-              onClick={() => {
-                // Dispatch the action to generate an image
-                dispatch(
-                  storyActions.generateImageRequest({
-                    prompt: storyIdea,
-                    caption: title, // Using the title as the caption for the image
-                    userId: userId,
-                  })
-                );
-
-                // Then, dispatch the action to generate a story
-                dispatch(
-                  storyActions.generateStoryRequest({
-                    prompt: storyIdea,
-                    title: title,
-                    userId: userId,
-                  })
-                );
-              }}
-            >
-              Generate Story
-            </Button>
-          </div>
+          <>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Review Your Inputs
+            </Typography>
+            <Typography>
+              <strong>Story Idea:</strong> {storyIdea}
+            </Typography>
+            <Typography>
+              <strong>Title:</strong> {title}
+            </Typography>
+          </>
+        );
+      case 3: // Generating Content
+        return (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <CircularProgress />
+            <Typography sx={{ mt: 2 }}>
+              Generating your story and image, please wait...if ten seconds go by click NEXT
+            </Typography>
+          </Box>
+        );
+      case 4: // View Gallery
+        return (
+          <Typography>
+            Content generated! Click "Go to Gallery" to view your story and
+            image in the gallery.
+          </Typography>
         );
       default:
-        return "Something went wrong";
+        return "Unknown step";
     }
   };
 
@@ -125,7 +134,6 @@ function Desk() {
         <Typography variant="h4" gutterBottom>
           Writing Desk
         </Typography>
-
         <Stepper activeStep={activeStep}>
           {steps.map((label) => (
             <Step key={label}>
@@ -133,21 +141,23 @@ function Desk() {
             </Step>
           ))}
         </Stepper>
-
-        {renderStepContent()}
-
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-          <Button
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            sx={{ mr: 1 }}
-          >
-            Back
-          </Button>
-          <Button variant="outlined" onClick={handleNext}>
-            {activeStep === steps.length - 1 ? "Done" : "Next"}
-            {/* //? maybe here i can say GO TO GALLERY? */}
-          </Button>
+        <Box sx={{ p: 3 }}>
+          {renderStepContent()}
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Button onClick={handleBack} disabled={activeStep === 0}>
+              Back
+            </Button>
+            {activeStep < steps.length - 1 && (
+              <Button variant="contained"  onClick={handleNext}>
+                Next
+              </Button>
+            )}
+            {activeStep === steps.length - 1 && (
+              <Button variant="contained" color="inherit" onClick={goToGallery}>
+                Go to Gallery
+              </Button>
+            )}
+          </Box>
         </Box>
       </Paper>
     </Box>

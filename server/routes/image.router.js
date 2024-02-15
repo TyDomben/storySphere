@@ -10,10 +10,23 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+// Route to fetch a single image by its ID TEMPORARY
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const queryText = 'SELECT * FROM "images" WHERE "id" = $1';
+    const result = await pool.query(queryText, [id]);
+    if (result.rows.length) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).send("Image not found");
+    }
+  } catch (error) {
+    console.error("Error fetching image by ID:", error);
+    res.status(500).send("Server error");
+  }
+});
 
-/**
- * GET route template
- */
 router.get("/", async (req, res) => {
   try {
     const queryText = "SELECT * FROM images"; // sample query
@@ -24,22 +37,38 @@ router.get("/", async (req, res) => {
     res.sendStatus(500);
   }
 });
+/**
+ * GET route template
+ */
+// Corrected route in the image router to fetch images by story ID
+router.get("/byStory/:storyId", async (req, res) => {
+  const { storyId } = req.params;
+  try {
+    const queryText = 'SELECT * FROM "images" WHERE "storyid" = $1';
+    const result = await pool.query(queryText, [storyId]);
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching images for story:", error);
+    res.status(500).send("Server error");
+  }
+});
 
 //*POST route to generate an image using OpenAI's DALL-E and upload to Cloudinary
 router.post("/generate", async (req, res) => {
   console.log("Received request for image generation:", req.body);
 
-  const { prompt, userId, storyId } = req.body;
+  const { prompt, storyId } = req.body;
 
   // Prepare the request body for the OpenAI API call
   console.log("Making OpenAI API call for image with prompt:", prompt);
   const openAiRequestBody = {
     prompt: prompt,
+    model: "dall-e-3",
     n: 1,
     response_format: "url",
     size: "1024x1024",
+    style: "natural",
   };
-  // style: "natural"
 
   try {
     const openAiImageResponse = await axios.post(
@@ -77,11 +106,12 @@ router.post("/generate", async (req, res) => {
       INSERT INTO images (url, caption, storyid)
       VALUES ($1, $2, $3)
       RETURNING *;`;
-    // Adjust the values array to match your table's expected data
+    //? double check these - this is not working as expected
     const dbResponse = await pool.query(insertQuery, [
       cloudinaryUrl,
       prompt,
       storyId || null,
+      //? storyid is a troublemaker
     ]);
     console.log("Database Insertion Response:", dbResponse.rows[0]);
 
@@ -91,7 +121,7 @@ router.post("/generate", async (req, res) => {
     res.status(500).send("Failed to generate or save image");
   }
 });
-
+// * put
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { caption } = req.body; // ? update the caption
@@ -112,6 +142,7 @@ router.put("/:id", async (req, res) => {
     res.sendStatus(500);
   }
 });
+//! delete
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   const queryText = `

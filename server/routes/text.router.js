@@ -70,6 +70,7 @@ router.post("/generate", async (req, res) => {
 
     // Assuming the API call is successful and you have your response
     console.log("OpenAI API Response:", response.data);
+
     console.log("just after API response -logged");
 
     const generatedContent = response.data.choices[0].message.content;
