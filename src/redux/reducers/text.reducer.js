@@ -11,35 +11,43 @@ import {
   DELETE_STORY_REQUEST,
   DELETE_STORY_SUCCESS,
   DELETE_STORY_FAILURE,
+  SET_LATEST_STORY_ID, // Make sure to import this
 } from "../actions/actions";
 
 const initialState = {
-  stories: [], 
+  stories: [],
   isLoading: false,
   error: null,
+  latestStoryId: null, // Initialize latestStoryId in the state
 };
 
 const textReducer = (state = initialState, action) => {
   switch (action.type) {
-    case action.GENERATE_STORY_SUCCESS:
+    case SET_LATEST_STORY_ID:
       return {
         ...state,
-        stories: [...state.stories, action.payload.story],
-        error: null,
+        latestStoryId: action.payload,
       };
-    case action.GENERATE_STORY_FAILURE:
+      case GENERATE_STORY_SUCCESS:
+        return {
+          ...state,
+          stories: [...state.stories, action.payload.story],
+          latestStoryId: action.payload.story.id, // Ensure this line correctly updates the ID
+          isLoading: false,
+          error: null,
+        };
+    case GENERATE_STORY_FAILURE:
       return {
         ...state,
-        error: action.payload.error,
+        error: action.payload,
       };
     case FETCH_STORIES_REQUEST:
       return { ...state, isLoading: true };
     case FETCH_STORIES_SUCCESS:
-      // Populate our stories array with the fetched data
       return {
         ...state,
-        isLoading: false,
         stories: action.payload,
+        isLoading: false,
         error: null,
       };
     case FETCH_STORIES_FAILURE:
@@ -72,7 +80,7 @@ const textReducer = (state = initialState, action) => {
     case DELETE_STORY_SUCCESS:
       return {
         ...state,
-        isLoading: false, 
+        isLoading: false,
         stories: state.stories.filter((story) => story.id !== action.payload),
       };
     case DELETE_STORY_FAILURE:
@@ -84,16 +92,3 @@ const textReducer = (state = initialState, action) => {
 };
 
 export default textReducer;
-
-//  case FETCH_STORIES_REQUEST:
-// return { ...state, isLoading: true };
-// case FETCH_STORIES_SUCCESS:
-//   // Populate our stories array with the fetched data
-//   return {
-//     ...state,
-//     isLoading: false,
-//     stories: action.payload,
-//     error: null,
-//   };
-// case FETCH_STORIES_FAILURE:
-//   return { ...state, isLoading: false, error: action.payload };

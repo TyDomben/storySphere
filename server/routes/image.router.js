@@ -1,41 +1,128 @@
-const express = require('express');
-const pool = require('../modules/pool');
+const express = require("express");
 const router = express.Router();
+const pool = require("../modules/pool");
+const axios = require("axios");
+require("dotenv").config();
 
-/**
- * GET route template
- */
-router.get('/', async (req, res) => {
-    try {
-      const queryText = 'SELECT * FROM images'; // sample query
-      const dbRes = await pool.query(queryText);
-      res.json(dbRes.rows);
-    } catch (err) {
-      console.error('Error completing SELECT images query', err);
-      res.sendStatus(500);
-    }
-  });
-  
-
-/**
- * POST route template
- */
-router.post('/', async (req, res) => {
-  const { url, caption, storyId } = req.body; 
-  const queryText = `
-    INSERT INTO images (url, caption, storyid)
-    VALUES ($1, $2, $3)
-    RETURNING *;`; // Returning the inserted row can be helpful for the client
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+// Route to fetch a single image by its ID TEMPORARY
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    const dbRes = await pool.query(queryText, [url, caption, storyId]);
-    res.json(dbRes.rows[0]);
-  } catch (err) {
-    console.error('Error completing INSERT image query', err);
-    res.sendStatus(500);
+    const queryText = 'SELECT * FROM "images" WHERE "id" = $1';
+    const result = await pool.query(queryText, [id]);
+    if (result.rows.length) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).send("Image not found");
+    }
+  } catch (error) {
+    console.error("Error fetching image by ID:", error);
+    res.status(500).send("Server error");
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.get("/", async (req, res) => {
+  try {
+    const queryText = "SELECT * FROM images"; // sample query
+    const dbRes = await pool.query(queryText);
+    res.json(dbRes.rows);
+  } catch (err) {
+    console.error("Error completing SELECT images query", err);
+    res.sendStatus(500);
+  }
+});
+/**
+ * GET route template
+ */
+// Corrected route in the image router to fetch images by story ID
+router.get("/byStory/:storyId", async (req, res) => {
+  const { storyId } = req.params;
+  try {
+    const queryText = 'SELECT * FROM "images" WHERE "storyid" = $1';
+    const result = await pool.query(queryText, [storyId]);
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching images for story:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+//*POST route to generate an image using OpenAI's DALL-E and upload to Cloudinary
+router.post("/generate", async (req, res) => {
+  console.log("Received request for image generation:", req.body);
+
+  const { prompt, storyId } = req.body;
+
+  // Prepare the request body for the OpenAI API call
+  console.log("Making OpenAI API call for image with prompt:", prompt);
+  const openAiRequestBody = {
+    prompt: prompt,
+    model: "dall-e-3",
+    n: 1,
+    response_format: "url",
+    size: "1024x1024",
+    style: "natural",
+  };
+
+  try {
+    const openAiImageResponse = await axios.post(
+      "https://api.openai.com/v1/images/generations",
+      openAiRequestBody,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+      }
+    );
+
+    console.log(
+      "OpenAI Image Generation API Response:",
+      openAiImageResponse.data
+    );
+    const generatedImageUrl = openAiImageResponse.data.data[0].url;
+    console.log("Generated Image URL:", generatedImageUrl);
+
+    console.log("Uploading generated image to Cloudinary");
+    const cloudinaryUploadResponse = await cloudinary.uploader.upload(
+      generatedImageUrl,
+      {
+        folder: "generated_images",
+      }
+    );
+    console.log("Cloudinary Upload Response:", cloudinaryUploadResponse);
+
+    const cloudinaryUrl = cloudinaryUploadResponse.secure_url;
+    console.log("Cloudinary Image URL:", cloudinaryUrl);
+
+    console.log("Inserting image data into database");
+    const insertQuery = `
+      INSERT INTO images (url, caption, storyid)
+      VALUES ($1, $2, $3)
+      RETURNING *;`;
+    //? double check these - this is not working as expected
+    const dbResponse = await pool.query(insertQuery, [
+      cloudinaryUrl,
+      prompt,
+      storyId || null,
+      //? storyid is a troublemaker
+    ]);
+    console.log("Database Insertion Response:", dbResponse.rows[0]);
+
+    res.json(dbResponse.rows[0]);
+  } catch (error) {
+    console.error("Error in /generate route for image:", error);
+    res.status(500).send("Failed to generate or save image");
+  }
+});
+// * put
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { caption } = req.body; // ? update the caption
   const queryText = `
@@ -48,14 +135,15 @@ router.put('/:id', async (req, res) => {
     if (dbRes.rows.length > 0) {
       res.json(dbRes.rows[0]);
     } else {
-      res.status(404).send('Image not found');
+      res.status(404).send("Image not found");
     }
   } catch (err) {
-    console.error('Error completing UPDATE image query', err);
+    console.error("Error completing UPDATE image query", err);
     res.sendStatus(500);
   }
 });
-router.delete('/:id', async (req, res) => {
+//! delete
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   const queryText = `
     DELETE FROM images
@@ -66,13 +154,12 @@ router.delete('/:id', async (req, res) => {
     if (dbRes.rows.length > 0) {
       res.json(dbRes.rows[0]);
     } else {
-      res.status(404).send('Image not found');
+      res.status(404).send("Image not found");
     }
   } catch (err) {
-    console.error('Error completing DELETE image query', err);
+    console.error("Error completing DELETE image query", err);
     res.sendStatus(500);
   }
 });
-
 
 module.exports = router;

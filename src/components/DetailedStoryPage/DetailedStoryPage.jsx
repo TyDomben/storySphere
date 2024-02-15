@@ -1,20 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { Container, Typography, Box, Button } from "@mui/material";
+import { Container, Typography, Box, Button, Grid, CardMedia } from "@mui/material";
+import axios from "axios";
 
 function DetailedStoryPage() {
   const { storyId } = useParams();
   const history = useHistory();
+  const [story, setStory] = useState({});
+  const [image, setImage] = useState({
+    url: "/v-puppy.png", // Ensure this default image path is correct
+    caption: "Default image",
+  });
 
-  // Placeholder data // should be mapping through gallery 
-  const story = {
-    title: "The Forgotten City",
-    content:
-      "Once upon a time, in a forgotten city, a secret lay hidden for centuries...",
-    author: "Ty Domben",
-    publishedDate: "March 3, 2024",
-    lastUpdated: "March 10, 2024",
-  };
+  useEffect(() => {
+    const fetchStoryDetails = async () => {
+      try {
+        const storyResponse = await axios.get(`/api/text/${storyId}`);
+        setStory(storyResponse.data);
+      } catch (error) {
+        console.error("Failed to fetch story", error);
+      }
+    };
+
+    const fetchImage = async () => {
+      try {
+        const imageResponse = await axios.get(`/api/images/${storyId}`);
+        if (imageResponse.data) {
+          setImage(imageResponse.data); // Assuming the response directly contains the image object
+        }
+      } catch (error) {
+        console.error("Failed to fetch image for story", error);
+      }
+    };
+
+    fetchStoryDetails();
+    fetchImage();
+  }, [storyId]);
 
   return (
     <Container maxWidth="md">
@@ -22,21 +43,18 @@ function DetailedStoryPage() {
         <Typography variant="h4" component="h1" gutterBottom>
           {story.title}
         </Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          By {story.author}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Published on {story.publishedDate} | Last updated on{" "}
-          {story.lastUpdated}
-        </Typography>
-        <Box my={2}>
-          <Typography variant="body1">{story.content}</Typography>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => history.goBack()}
-        >
+        <Typography variant="body1">{story.content}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <CardMedia
+              component="img"
+              image={image.url}
+              alt={image.caption}
+              style={{ width: '100%', height: 'auto' }}
+            />
+          </Grid>
+        </Grid>
+        <Button variant="contained" color="primary" onClick={() => history.goBack()}>
           Back to Gallery
         </Button>
       </Box>

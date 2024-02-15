@@ -1,4 +1,6 @@
 // actions.js
+// story id to link with image id
+export const SET_LATEST_STORY_ID = "SET_LATEST_STORY_ID";
 
 // Text-related action types
 export const FETCH_STORIES_REQUEST = "FETCH_STORIES_REQUEST";
@@ -53,26 +55,31 @@ export const DELETE_AUDIO_SUCCESS = "DELETE_AUDIO_SUCCESS";
 export const DELETE_AUDIO_FAILURE = "DELETE_AUDIO_FAILURE";
 // !!DELETE ROUTE
 
+// Action Creators
+export const setLatestStoryId = (data) => ({
+  type: SET_LATEST_STORY_ID,
+  payload: data,
+});
 // Action creators for text-related actions
 export const fetchStoriesRequest = () => ({
   type: FETCH_STORIES_REQUEST,
 });
-export const fetchStoriesSuccess = (stories) => ({
+export const fetchStoriesSuccess = (data) => ({
   type: FETCH_STORIES_SUCCESS,
-  payload: stories,
+  payload: data,
 });
 export const fetchStoriesFailure = (error) => ({
   type: FETCH_STORIES_FAILURE,
   payload: error,
 });
 
-export const addStoryRequest = (storyData) => ({
+export const addStoryRequest = (data) => ({
   type: ADD_STORY_REQUEST,
-  payload: storyData,
+  payload: data,
 });
-export const addStorySuccess = (story) => ({
+export const addStorySuccess = (data) => ({
   type: ADD_STORY_SUCCESS,
-  payload: story,
+  payload: data,
 });
 export const addStoryFailure = (error) => ({
   type: ADD_STORY_FAILURE,
@@ -81,7 +88,7 @@ export const addStoryFailure = (error) => ({
 
 export const generateStoryRequest = (data) => ({
   type: GENERATE_STORY_REQUEST,
-  payload: data, // This directly uses the data object received, which should include both `prompt` and `userId`
+  payload: data, // This directly uses the data object received, which should include both `prompt` and `userId` and more
 });
 export const generateStorySuccess = (data) => ({
   type: GENERATE_STORY_SUCCESS,
@@ -95,51 +102,53 @@ export const generateStoryFailure = (data) => ({
 export const deleteStoryRequest = (storyId) => ({
   type: "DELETE_STORY_REQUEST",
   payload: storyId,
+  // this payload COULD change to data to match but let's not get too crazy
 });
 // !! DELETE Route
 export const deleteStorySuccess = (storyId) => ({
   type: "DELETE_STORY_SUCCESS",
   payload: storyId,
+  // this payload COULD change to data to match but let's not get too crazy
 });
 // !! DELETE Route
 export const deleteStoryFailure = (error) => ({
   type: "DELETE_STORY_FAILURE",
   payload: error,
-}); 
+});
 // !! DELETE Route
 // Action creators for image-related actions
 export const fetchImagesRequest = () => ({
   type: FETCH_IMAGES_REQUEST,
 });
-export const fetchImagesSuccess = (images) => ({
+export const fetchImagesSuccess = (data) => ({
   type: FETCH_IMAGES_SUCCESS,
-  payload: images,
+  payload: data,
 });
 export const fetchImagesFailure = (error) => ({
   type: FETCH_IMAGES_FAILURE,
   payload: error,
 });
 
-export const addImageRequest = (imageData) => ({
+export const addImageRequest = (data) => ({
   type: ADD_IMAGE_REQUEST,
-  payload: imageData,
+  payload: data,
 });
-export const addImageSuccess = (image) => ({
+export const addImageSuccess = (data) => ({
   type: ADD_IMAGE_SUCCESS,
-  payload: image,
+  payload: data,
 });
 export const addImageFailure = (error) => ({
   type: ADD_IMAGE_FAILURE,
   payload: error,
 });
 
-export const generateImageRequest = (details) => ({
+export const generateImageRequest = (data) => ({
   type: GENERATE_IMAGE_REQUEST,
-  payload: details,
+  payload: data,
 });
-export const generateImageSuccess = (image) => ({
+export const generateImageSuccess = (data) => ({
   type: GENERATE_IMAGE_SUCCESS,
-  payload: image,
+  payload: data,
 });
 export const generateImageFailure = (error) => ({
   type: GENERATE_IMAGE_FAILURE,
@@ -150,35 +159,35 @@ export const generateImageFailure = (error) => ({
 export const fetchAudiosRequest = () => ({
   type: FETCH_AUDIOS_REQUEST,
 });
-export const fetchAudiosSuccess = (audios) => ({
+export const fetchAudiosSuccess = (data) => ({
   type: FETCH_AUDIOS_SUCCESS,
-  payload: audios,
+  payload: data,
 });
 export const fetchAudiosFailure = (error) => ({
   type: FETCH_AUDIOS_FAILURE,
   payload: error,
 });
 
-export const addAudioRequest = (audioData) => ({
+export const addAudioRequest = (data) => ({
   type: ADD_AUDIO_REQUEST,
-  payload: audioData,
+  payload: data,
 });
-export const addAudioSuccess = (audio) => ({
+export const addAudioSuccess = (data) => ({
   type: ADD_AUDIO_SUCCESS,
-  payload: audio,
+  payload: data,
 });
 export const addAudioFailure = (error) => ({
   type: ADD_AUDIO_FAILURE,
   payload: error,
 });
 
-export const generateAudioRequest = (details) => ({
+export const generateAudioRequest = (data) => ({
   type: GENERATE_AUDIO_REQUEST,
-  payload: details,
+  payload: data,
 });
-export const generateAudioSuccess = (audio) => ({
+export const generateAudioSuccess = (data) => ({
   type: GENERATE_AUDIO_SUCCESS,
-  payload: audio,
+  payload: data,
 });
 export const generateAudioFailure = (error) => ({
   type: GENERATE_AUDIO_FAILURE,

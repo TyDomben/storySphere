@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { Box, TextField, Button, Typography, Container } from "@mui/material";
-// import { fetchStoryById, updateStory } from '../services/storyService';
+import axios from "axios";
 
 function EditStoryPage() {
   const { storyId } = useParams();
@@ -9,21 +9,20 @@ function EditStoryPage() {
   const [story, setStory] = useState({ title: "", content: "" });
 
   useEffect(() => {
-    // Fetch the story details by ID
     const fetchStoryDetails = async () => {
-      // const response = await fetchStoryById(storyId);
-      // setStory(response.data);
-      // Placeholder for fetched story data
-      setStory({
-        title: "The Forgotten City",
-        content:
-          "Once upon a time, in a forgotten city, something mysterious happened...",
-      });
+      try {
+        const response = await axios.get(`/api/stories/${storyId}`);
+        console.log("Fetched story details:", response.data); // Log fetched data
+        setStory(response.data);
+      } catch (error) {
+        console.error("Failed to fetch story details", error);
+      }
     };
 
     fetchStoryDetails();
   }, [storyId]);
 
+  // Ensure handleChange updates the correct field in state
   const handleChange = (event) => {
     const { name, value } = event.target;
     setStory((prevStory) => ({ ...prevStory, [name]: value }));
@@ -31,18 +30,19 @@ function EditStoryPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Update the story details
-    // await updateStory(storyId, story);
-    console.log("Story updated:", story);
-    history.push("/gallery"); // Redirect to the gallery page
+    try {
+      await axios.put(`/api/stories/${storyId}`, story);
+      console.log("Story updated:", story);
+      history.push("/gallery");
+    } catch (error) {
+      console.error("Failed to update story", error);
+    }
   };
 
   return (
     <Container maxWidth="sm">
       <Box my={4}>
-        <Typography variant="h4" gutterBottom>
-          Edit Story
-        </Typography>
+        <Typography variant="h4" gutterBottom>Edit Story</Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -50,7 +50,7 @@ function EditStoryPage() {
             fullWidth
             label="Title"
             name="title"
-            value={story.title}
+            value={story.title || ''} // Fallback to an empty string if story.title is undefined
             onChange={handleChange}
           />
           <TextField
@@ -61,15 +61,10 @@ function EditStoryPage() {
             name="content"
             multiline
             rows={4}
-            value={story.content}
+            value={story.content || ''} // Fallback to an empty string if story.content is undefined
             onChange={handleChange}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Save Changes
           </Button>
         </Box>
