@@ -1,7 +1,24 @@
+/**
+ * Story Routes
+ *
+ * This router handles all story-related endpoints for the StorySphere application.
+ * It includes CRUD operations for stories, interfacing with the PostgreSQL database
+ * using the `pool` object to execute queries.
+ *
+ * Endpoints:
+ * - GET /: Fetch all stories.
+ * - GET /:id: Fetch a specific story by ID.
+ * - POST /generate: Generate a new story using OpenAI's API and insert it into the database.
+ * - PUT /:id: Update an existing story.
+ * - PUT /:id/email: Update a user's email address for newsletter subscription.
+ * - DELETE /:id: Delete a story, ensuring only authorized deletion based on user session.
+ *
+ * Note: All routes are designed with error handling to respond with appropriate status codes.
+ */
+
 const express = require("express");
 const router = express.Router();
 const pool = require("../modules/pool");
-const { log } = require("console");
 const axios = require("axios");
 
 // * Get all stories
@@ -42,6 +59,7 @@ router.post("/generate", async (req, res) => {
   console.log("Prompt:", prompt);
   console.log("UserId:", userId);
   console.log("Title:", title);
+  console.log("Attempting to fetch story with ID:", req.params.id);
   // Prepare the request body for the OpenAI API call
   const requestBody = {
     model: "gpt-3.5-turbo-0125",
@@ -73,17 +91,30 @@ router.post("/generate", async (req, res) => {
 
     console.log("just after API response -logged");
 
+    // Assuming response.data.choices[0].message contains the generated content
     const generatedContent = response.data.choices[0].message.content;
+    // Parse the JSON string to access the story object
+    const contentObject = JSON.parse(generatedContent);
+
+    // Extract the story text
+    const generatedStoryText = contentObject.story;
     console.log("Generated Content:", generatedContent);
     console.log("just after generated content -logged");
 
     // Insert the generated content into the "stories" table
+    // const insertQuery = `
+    //   INSERT INTO "stories" (title, content, userid, createddate, lastupdateddate)
+    //   VALUES ($1, $2, $3, NOW(), NOW())
+    //   RETURNING *;`;
+    // // ? confirm the values are correct
+
+    // const values = [title, generatedContent, userId];
     const insertQuery = `
-      INSERT INTO "stories" (title, content, userid, createddate, lastupdateddate)
-      VALUES ($1, $2, $3, NOW(), NOW())
-      RETURNING *;`;
-    // ? confirm the values are correct
-    const values = [title, generatedContent, userId];
+    INSERT INTO "stories" (title, content, userid, createddate, lastupdateddate)
+    VALUES ($1, $2, $3, NOW(), NOW())
+    RETURNING *;
+`;
+    const values = [title, generatedStoryText, userId]; // Use the extracted story text here
 
     // Using your existing pool to query your PostgreSQL database
     const dbResponse = await pool.query(insertQuery, values);
@@ -91,8 +122,16 @@ router.post("/generate", async (req, res) => {
     console.log("Insert Query:", insertQuery);
     console.log("DB Insertion Response:", dbResponse.rows[0]);
 
-    // Respond to the client with the new story details
+    //! Respond to the client with the new story details
     res.json({ success: true, story: dbResponse.rows[0] });
+    // After receiving the response from the OpenAI API
+    console.log("Full API Response:", response.data);
+
+    // To explore different paths that might contain the generated content
+    console.log("First Attempt:", response.data.choices[0].message.content);
+    console.log("Second Attempt:", response.data.choices[0].text);
+    console.log("Third Attempt:", response.data.choices[0].content);
+    console.log("Fourth Attempt:", response.data.text); // I
   } catch (error) {
     if (error.response) {
       // If the error is related to the HTTP response

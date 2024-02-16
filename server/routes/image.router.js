@@ -1,3 +1,42 @@
+/**
+ * Image Management Routes for Cloud-Based Storytelling Application
+ *
+ * This module defines the Express routes for managing image resources, including fetching, generating, updating, and deleting images.
+ * It utilizes PostgreSQL for data persistence, Axios for HTTP requests, and integrates with Cloudinary for image hosting.
+ * 
+ * Key Features:
+ * - Fetch images from the database by ID or story ID.
+ * - Generate new images using OpenAI's DALL-E model, upload them to Cloudinary, and save the reference in the database.
+ * - Update image captions.
+ * - Delete images from the database and optionally from Cloudinary (consider implementing).
+ *
+ * Environment Variables:
+ * - CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET for Cloudinary configuration.
+ * - OPENAI_API_KEY for authenticating requests to OpenAI's API.
+ *
+ * Endpoints:
+ * - GET /:id - Fetches a single image by its database ID.
+ * - GET / - Fetches all images.
+ * - GET /byStory/:storyId - Fetches all images associated with a specific story.
+ * - POST /generate - Generates an image via OpenAI's DALL-E, uploads to Cloudinary, and saves in the database.
+ * - PUT /:id - Updates the caption of a specific image.
+ * - DELETE /:id - Deletes a specific image from the database.
+ * 
+ * Usage Notes:
+ * - For image generation, ensure the body contains 'prompt' for the image description and optionally 'storyId' to associate the image with a story.
+ * - Update and delete operations require the image ID as part of the URL path.
+ * - When deleting images, consider also removing them from Cloudinary to manage storage efficiently.
+ *
+ * Future Enhancements:
+ * - Implement more robust error handling and validation to improve reliability and user experience.
+ * - Expand the functionality to include image categorization, tagging, and advanced search capabilities.
+ * - Secure endpoints with authentication and authorization mechanisms to protect image resources.
+ *
+ * Dependencies:
+ * - express for routing, axios for HTTP requests, dotenv for environment variable management, pg (via pool) for PostgreSQL interactions, cloudinary for image hosting.
+ *
+ */
+
 const express = require("express");
 const router = express.Router();
 const pool = require("../modules/pool");

@@ -1,3 +1,26 @@
+/**
+ * Desk Component - User Interaction and Content Generation
+ *
+ * This component serves as the primary user interaction interface for generating stories and images.
+ * It guides the user through a multi-step process using a Material UI Stepper component, culminating in the generation of content.
+ *
+ * Steps:
+ * 1. Input Story Idea - User enters the concept for their story.
+ * 2. Craft Title - User provides a title for their story.
+ * 3. Review - User reviews their inputs before submission.
+ * 4. Generating Content - Displays progress as the story and image are being generated.
+ * 5. View Gallery - Option to navigate to the gallery to view the generated content.
+ *
+ * Features:
+ * - Utilizes Redux actions for asynchronous content generation.
+ * - Simulates a waiting period during content generation to manage user expectations.
+ * - Provides a seamless transition to the gallery upon completion.
+ *
+ * Enhancements:
+ * - Implement real-time feedback on content generation progress.
+ * - Optimize loading state management for a smoother UX during content generation.
+ */
+
 import React, { useState } from "react";
 import {
   Box,
@@ -15,10 +38,13 @@ import * as storyActions from "../../redux/actions/actions";
 import { useHistory } from "react-router-dom";
 
 function Desk() {
+  // Redux setup for dispatching actions
   const dispatch = useDispatch();
   const history = useHistory();
+  // State management for stepper progress and loading indicator
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  // Stepper steps definition
   const steps = [
     "Input Story Idea",
     "Craft Title",
@@ -26,8 +52,10 @@ function Desk() {
     "Generating Content",
     "View Gallery",
   ];
+  // State for user inputs
   const [storyIdea, setStoryIdea] = useState("");
   const [title, setTitle] = useState("");
+  // Fetching user ID from global state for associating content with the user
   const userId = useSelector((state) => state.user.id);
 
   const handleNext = () => {
@@ -38,7 +66,7 @@ function Desk() {
       setTimeout(() => {
         setLoading(false);
         setActiveStep((prev) => prev + 1); // Move to generating content step
-      }, 10000); // Simulated generation delay
+      }, 1000); // Simulated generation delay
 
       // Trigger content generation
       dispatch(
@@ -59,10 +87,8 @@ function Desk() {
       setActiveStep((prev) => prev + 1);
     }
   };
-
   const handleBack = () => setActiveStep((prev) => Math.max(prev - 1, 0));
   const goToGallery = () => history.push("/gallery");
-
   const renderStepContent = () => {
     switch (activeStep) {
       case 0: // Story Idea Input
@@ -112,7 +138,8 @@ function Desk() {
           >
             <CircularProgress />
             <Typography sx={{ mt: 2 }}>
-              Generating your story and image, please wait...if ten seconds go by click NEXT
+              Generating your story and image, please wait...if ten seconds pass
+              please click NEXT
             </Typography>
           </Box>
         );
@@ -148,12 +175,12 @@ function Desk() {
               Back
             </Button>
             {activeStep < steps.length - 1 && (
-              <Button variant="contained"  onClick={handleNext}>
+              <Button variant="contained" onClick={handleNext}>
                 Next
               </Button>
             )}
             {activeStep === steps.length - 1 && (
-              <Button variant="contained" color="inherit" onClick={goToGallery}>
+              <Button variant="contained" color="primary" onClick={goToGallery}>
                 Go to Gallery
               </Button>
             )}

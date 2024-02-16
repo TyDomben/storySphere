@@ -1,8 +1,36 @@
+/**
+ * Footer Component
+ *
+ * Overview:
+ * The Footer component provides navigational links and important informational links for users at the bottom of the application.
+ * It is divided into sections for easy navigation and access to various pages and external resources.
+ *
+ * Features:
+ * - Dynamic rendering of navigational links to key sections of the application such as Home, Desk, Gallery, and About.
+ * - An extensive list of informational links including legal notices, contact information, and policies, all pointing to placeholder URLs.
+ * - Responsive design that adjusts the layout of link sections based on screen size, ensuring accessibility and usability across devices.
+ *
+ * Structure:
+ * - Utilizes Material UI's `Container`, `Grid`, and `Typography` components for layout and styling.
+ * - Navigation links and company info links are stored in arrays and mapped to render, allowing easy updates and maintenance.
+ * - Divides company info links into two columns for a balanced visual presentation in larger screen sizes.
+ *
+ * Implementation Details:
+ * - `linkSections` array contains objects with labels and paths for navigational links within the app.
+ * - `infoSections` array contains objects with labels and paths for external informational links, currently all set to the same placeholder URL for demonstration purposes.
+ * - Responsive layout achieved through Material UI's `Grid` system, adjusting the number of columns based on the screen size.
+ *
+ * Usage:
+ * This component is intended to be used at the bottom of all pages within the application, providing a consistent footer across the site.
+ *
+ * Future Enhancements:
+ * - Actual URLs should replace the placeholder GitHub links in `infoSections` to point to relevant legal and policy documents.
+ * - Consider adding a "back to top" button for improved navigation in longer pages.
+ * - Expand the footer content to include social media links, certifications, or other relevant information as the application grows.
+ */
+
 import React from "react";
 import { Container, Grid, Typography, Link } from "@mui/material";
-// import { createTheme } from "@mui/material/styles";
-
-// const theme = createTheme();
 
 function Footer() {
   const linkSections = [
@@ -15,6 +43,7 @@ function Footer() {
   const infoSections = [
     {
       label: "Newsletter Sign-up",
+      // ? adjust path to ABOUT PAGE
       path: "https://github.com/TyDomben/TyDomben",
     },
     {
@@ -44,16 +73,14 @@ function Footer() {
     /* Footer.jsx */
   }
   return (
-    
     <Container
-      // component="footer"
+    // component="footer"
 
-      
-      // sx={{
-      //   py: 5, // padding top and bottom
-      //   backgroundColor: "#f7f7f7",
-      //   color: "text.secondary", // theme-based color
-      // }}
+    // sx={{
+    //   py: 5, // padding top and bottom
+    //   backgroundColor: "#f7f7f7",
+    //   color: "text.secondary", // theme-based color
+    // }}
     >
       <Grid container spacing={2} justifyContent="space-between">
         {/* Production Notice */}
