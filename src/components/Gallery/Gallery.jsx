@@ -1,3 +1,29 @@
+/**
+ * Gallery Component
+ *
+ * Overview:
+ * The Gallery component displays a collection of stories with their associated images.
+ * It provides a visual representation of stories that users can interact with, including viewing, editing, and deleting stories.
+ *
+ * Note all actions are stored in actions.js
+ * 
+ * Features:
+ * - Dynamically loads stories and their images from the Redux store, displaying them in a responsive grid layout.
+ * - Utilizes Material UI components for consistent styling and responsiveness.
+ * - Offers interactive card actions for each story, including viewing the detailed story page, editing the story, and deleting the story with confirmation.
+ * - Fallback to a default image when a story does not have an associated image.
+ *
+ * Implementation Details:
+ * - Uses `useEffect` to fetch stories and images on component mount or when dependencies change.
+ * - Maps over the `stories` array from the Redux store to render a `Card` for each story.
+ * - Attempts to find a matching image for each story based on the story ID; if not found, displays a default image.
+ * - Uses `useHistory` from `react-router-dom` to programmatically navigate users to different routes based on their interactions.
+ *
+ * Usage:
+ * Intended to be used as the primary means of browsing stories within the application.
+ * Accessible directly via the `/gallery` route and linked from other parts of the application for easy navigation.
+ */
+
 import React, { useEffect } from "react";
 import {
   Card,
@@ -16,30 +42,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as actions from "../../redux/actions/actions";
 
-// Make sure the path to the default image is correctly referenced
-// Assuming your build process copies the contents of the public folder correctly,
-// and considering the typical structure of a React app, the path should be as follows:
-const defaultImageUrl = "/v-puppy.png"; // Adjusted to use the correct path
+const defaultImageUrl = "/v-puppy.png"; // Path to the default image when no image is associated with a story
 
 function Gallery() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const stories = useSelector((state) => state.text.stories);
-  const images = useSelector((state) => state.image.images);
-
+  const stories = useSelector((state) => state.text.stories); // Fetching stories from Redux store
+  const images = useSelector((state) => state.image.images); // Fetching images from Redux store
+  // Fetch stories and images on component mount
   useEffect(() => {
     dispatch(actions.fetchStoriesRequest());
     dispatch(actions.fetchImagesRequest());
   }, [dispatch]);
-
+  // Navigate to the detailed story view
   const handleViewStory = (storyId) => {
     history.push(`/gallery/${storyId}`);
   };
-
+  // Navigate to the story edit page
   const handleEditStory = (storyId) => {
     history.push(`/edit/${storyId}`);
   };
-
+  // Handle story deletion with confirmation dialog
   const handleDeleteStory = (storyId) => {
     if (window.confirm("Are you sure you want to delete this story?")) {
       dispatch(actions.deleteStoryRequest(storyId));
@@ -60,7 +83,7 @@ function Gallery() {
                   component="img"
                   image={matchingImage ? matchingImage.url : defaultImageUrl}
                   alt={matchingImage ? matchingImage.caption : "Default image"}
-                  style={{ height: 140, width: '100%', objectFit: 'cover' }} // Ensured the image covers the card area appropriately
+                  style={{ height: 140, width: "100%", objectFit: "cover" }} // Ensured the image covers the card area appropriately
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
@@ -74,14 +97,26 @@ function Gallery() {
                 </CardContent>
               </CardActionArea>
               <CardActions>
-                <IconButton aria-label="view" onClick={() => handleViewStory(story.id)}>
+                <IconButton
+                  aria-label="view"
+                  onClick={() => handleViewStory(story.id)}
+                >
                   <VisibilityIcon />
+                  {/* detailed view */}
                 </IconButton>
-                <IconButton aria-label="edit" onClick={() => handleEditStory(story.id)}>
+                <IconButton
+                  aria-label="edit"
+                  onClick={() => handleEditStory(story.id)}
+                >
                   <EditIcon />
+                  {/* Edit Story Component */}
                 </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleDeleteStory(story.id)}>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => handleDeleteStory(story.id)}
+                >
                   <DeleteIcon />
+                  {/* //!delete */}
                 </IconButton>
               </CardActions>
             </Card>

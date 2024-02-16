@@ -1,5 +1,36 @@
-// src/theme/theme.js
-// !this is a neccesary file - the declaration of dark and light mode at the bottom
+/**
+ * Theme Configuration for Material UI in a React Application
+ *
+ * This file is crucial for defining the light and dark mode themes using Material UI's createTheme function.
+ * It leverages a dynamic approach to theme customization, allowing for a seamless transition between light and dark modes based on user preference.
+ *
+ * Key Concepts:
+ * - Utilizes the getDesignTokens function to define color palettes, background colors, and text styles specific to light and dark modes.
+ * - Employs conditional logic within getDesignTokens to toggle between light and dark mode palettes.
+ * - The lightTheme and darkTheme are exported as constants, created by passing 'light' or 'dark' mode strings to the getDesignTokens function.
+ * - The theme object contains both lightTheme and darkTheme for easy access and application throughout the React application.
+ *
+ * Usage:
+ * - Import the theme object into your application's root (e.g., App.js) or theme provider context to apply the light or dark theme based on user settings or system preferences.
+ * - Use the createTheme function from @mui/material/styles to ensure compatibility and leverage Material UI's theming capabilities.
+ *
+ * Palette Details:
+ * - Light Mode features a primary color of blue with black contrast text, and a secondary color of pink with white contrast text.
+ * - Dark Mode features a primary color of light blue with black contrast text, and a secondary color of lighter pink with black contrast text.
+ * - Background and text colors are adjusted accordingly to enhance readability and user experience in both modes.
+ *
+ * References:
+ * - Material UI Dark Mode Customization: https://mui.com/material-ui/customization/dark-mode/
+ *
+ * Future Enhancements:
+ * - Consider adding a user preference setting to automatically switch between light and dark modes.
+ * - Explore extending the theme configuration to include typography, shape, and other design elements for a more customized user interface.
+ *
+ * Dependencies:
+ * - @mui/material for Material UI components and styles.
+ *
+ */
+
 import { createTheme } from "@mui/material/styles";
 // https://mui.com/material-ui/customization/dark-mode/
 const getDesignTokens = (mode) => ({
