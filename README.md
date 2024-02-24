@@ -1,3 +1,5 @@
+Check out my project presentation video on LinkedIn! - [Watch the Video](https://www.linkedin.com/feed/update/urn:li:activity:7166096159864676355/)
+
 StorySphere
 ===========
 
